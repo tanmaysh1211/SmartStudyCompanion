@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AI Chat — Smart Study Companion</title>
+    <link rel="stylesheet" href="../css/style.css" />
+    <link rel="stylesheet" href="../css/chat.css" />
+</head>
+
+<body>
+
+    <!-- Navbar -->
+    <div id="navbar-placeholder"></div>
+
+    <main class="main chat-main">
+
+        <div class="chat-wrapper card">
+
+            <!-- Chat Header -->
+            <div class="chat-header">
+                <div class="chat-header-left">
+                    <div class="chat-avatar" aria-hidden="true">🤖</div>
+                    <div>
+                        <h2 class="chat-title">AI Chat Assistant</h2>
+                        <p class="chat-subtitle" id="chat-note-title">Ask questions about your uploaded content</p>
+                    </div>
+                </div>
+                <div class="chat-header-right">
+                    <button class="btn-icon" id="clear-chat-btn" title="Clear conversation">🗑 Clear</button>
+                    <a class="btn-secondary btn-sm" href="#" onclick="window.history.back(); return false;">← Back</a>
+                </div>
+            </div><!-- /chat-header -->
+
+            <!-- Suggested Prompts -->
+            <div class="suggested-prompts-bar">
+                <span class="prompt-bar-label">Try asking:</span>
+                <div class="suggested-prompts" id="suggested-prompts">
+                    <!-- Populated by chat.js → renderSuggestedPrompts() -->
+                </div>
+            </div>
+
+            <!-- Messages Area -->
+            <div class="chat-messages" id="chat-messages" role="log" aria-live="polite" aria-label="Chat messages">
+                <!-- Messages appended by chat.js → appendMessage() -->
+                <!-- Welcome message rendered on page load -->
+            </div>
+
+            <!-- Input Row -->
+            <div class="chat-input-area">
+                <div class="chat-input-row">
+                    <textarea class="chat-input" id="chat-input" placeholder="Ask a question about your content…"
+                        rows="1" maxlength="2000" aria-label="Chat message input"></textarea>
+                    <button class="chat-send-btn" id="chat-send-btn" aria-label="Send message">
+                        <span>➤</span>
+                    </button>
+                </div>
+                <p class="chat-input-hint">Press <kbd>Enter</kbd> to send · <kbd>Shift+Enter</kbd> for new line</p>
+            </div>
+
+        </div><!-- /chat-wrapper -->
+
+        <!-- Scope Notice -->
+        <div class="chat-notice">
+            <span class="notice-icon">ℹ️</span>
+            The AI answers questions <strong>only</strong> about your uploaded note content.
+            Off-topic questions will be politely declined.
+        </div>
+
+    </main>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/9.1.6/marked.min.js"></script>
+    
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['\\(', '\\)']],
+                displayMath: [['\\[', '\\]']],
+                processEscapes: true,
+                packages: { '[+]': ['ams'] }
+            },
+            svg: { fontCache: 'global' },
+            startup: {
+                typeset: false   // don't auto-typeset on load, we call it manually
+            },
+            options: {
+                skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+            }
+        };
+    </script>
+    <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+    <script src="../js/auth.js"></script>
+    <script src="../js/upload.js"></script>
+    <script src="../js/summary.js"></script>
+    <script src="../js/quiz.js"></script>
+    <script src="../js/chat.js"></script>
+    <script src="../js/main.js"></script>
+
+</body>
+
+</html>

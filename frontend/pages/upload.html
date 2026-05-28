@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Upload Notes — Smart Study Companion</title>
+    <link rel="stylesheet" href="../css/style.css" />
+</head>
+
+<body>
+
+    <!-- Navbar -->
+    <div id="navbar-placeholder"></div>
+
+    <main class="main">
+
+        <!-- Page Header -->
+        <div class="page-header">
+            <h1 class="page-title">Upload Notes</h1>
+            <p class="page-subtitle">Upload your PDF or text files and let AI do the heavy lifting.</p>
+        </div>
+
+        <div class="upload-layout">
+
+            <!-- Upload Card -->
+            <div class="card upload-card">
+
+                <div id="upload-error" class="alert alert-error" style="display:none;"></div>
+                <div id="upload-success" class="alert alert-success" style="display:none;"></div>
+
+                <!-- Note Name -->
+                <div class="form-group">
+                    <label class="form-label" for="note-name">Note Name <span class="required">*</span></label>
+                    <input class="input" type="text" id="note-name"
+                        placeholder="e.g. Operating System Notes — Chapter 7" maxlength="120" />
+                </div>
+
+                <!-- Drag & Drop Zone -->
+                <div class="upload-zone" id="upload-zone" tabindex="0" role="button" aria-label="Upload file area">
+                    <div class="upload-icon" aria-hidden="true">📂</div>
+                    <p class="upload-zone-title">Drag &amp; drop your files here</p>
+                    <p class="upload-zone-sub">or <strong>click to browse</strong></p>
+                    <p class="upload-zone-hint">Supported formats: <strong>PDF</strong>, <strong>TXT</strong>,
+                        <strong>MD</strong> — max 20 MB each</p>
+                    <input type="file" id="file-input" multiple accept=".pdf,.txt,.md,text/plain,application/pdf"
+                        style="display:none;" />
+                </div>
+
+                <!-- Staged File List -->
+                <div id="file-list" class="file-list"></div>
+
+                <!-- Divider -->
+                <div class="divider">
+                    <span>or paste text directly</span>
+                </div>
+
+                <!-- Paste Text Area -->
+                <div class="form-group">
+                    <label class="form-label" for="paste-text">Paste your notes</label>
+                    <textarea class="textarea" id="paste-text" rows="6"
+                        placeholder="Paste your notes, lecture slides content, or any study material here…"></textarea>
+                </div>
+
+                <!-- Submit -->
+                <div class="form-actions">
+                    <button class="btn-secondary" type="button" onclick="window.history.back()">Cancel</button>
+                    <button class="btn-primary" type="button" id="upload-btn">📤 Upload Note</button>
+                </div>
+
+            </div><!-- /upload-card -->
+
+            <!-- Tips Sidebar -->
+            <aside class="upload-tips card">
+                <h3 class="tips-title">💡 Tips for Best Results</h3>
+                <ul class="tips-list">
+                    <li>
+                        <strong>Use clear PDF files</strong> — scanned images may reduce AI accuracy.
+                    </li>
+                    <li>
+                        <strong>Name your notes descriptively</strong> — e.g. "Physics Chapter 3: Waves" helps the AI
+                        stay on topic.
+                    </li>
+                    <li>
+                        <strong>Paste clean text</strong> — remove headers/footers/page numbers before pasting for
+                        cleaner summaries.
+                    </li>
+                    <li>
+                        <strong>One topic per note</strong> — shorter, focused notes produce better quizzes and
+                        summaries.
+                    </li>
+                    <li>
+                        <strong>After uploading</strong> — click "View" on a note to generate a summary, take a quiz, or
+                        chat with the AI.
+                    </li>
+                </ul>
+
+                <div class="tips-formats">
+                    <div class="format-badge">📄 PDF</div>
+                    <div class="format-badge">📝 TXT</div>
+                    <div class="format-badge">📋 MD</div>
+                </div>
+            </aside>
+
+        </div><!-- /upload-layout -->
+
+    </main>
+
+    <script src="../js/auth.js"></script>
+    <script src="../js/upload.js"></script>
+    <script src="../js/summary.js"></script>
+    <script src="../js/quiz.js"></script>
+    <script src="../js/chat.js"></script>
+    <script src="../js/main.js"></script>
+
+    <script>
+        // After a successful upload, redirect to the new note's view page
+        const originalUploadNote = uploadNote;
+        window.uploadNote = async function () {
+            const result = await originalUploadNote();
+            if (result && result.success && result.note_id) {
+                setTimeout(() => {
+                    window.location.href = `view-note.html?id=${result.note_id}`;
+                }, 1200);
+            }
+        };
+
+        // Re-bind upload button to the overridden function
+        document.addEventListener("DOMContentLoaded", () => {
+            const btn = document.getElementById("upload-btn");
+            if (btn) {
+                btn.removeEventListener("click", uploadNote);
+                btn.addEventListener("click", window.uploadNote);
+            }
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,1371 @@
+<!-- <!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>View Note — Smart Study Companion</title>
+    <link rel="stylesheet" href="../css/style.css" />
+    <style>
+        .vn-wrap {
+            max-width: 1180px;
+            margin: 0 auto;
+            padding: 0 2rem 4rem;
+        }
+
+        .vn-crumb {
+            display: flex;
+            align-items: center;
+            gap: .4rem;
+            font-size: .8rem;
+            color: #aaa;
+            margin-bottom: 1.4rem;
+        }
+
+        .vn-crumb a {
+            color: #7c5cfc;
+            text-decoration: none;
+        }
+
+        .vn-crumb a:hover {
+            text-decoration: underline;
+        }
+
+        .vn-titlebar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1.6rem;
+            flex-wrap: wrap;
+            gap: .75rem;
+        }
+
+        .vn-titlebar h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1a1242;
+            margin: 0;
+        }
+
+        .vn-back {
+            font-size: .82rem;
+            color: #7c5cfc;
+            background: #f4f0ff;
+            border: 1px solid #ddd5ff;
+            border-radius: 8px;
+            padding: .4rem .95rem;
+            text-decoration: none;
+            transition: background .15s;
+        }
+
+        .vn-back:hover {
+            background: #ebe3ff;
+        }
+
+        .vn-grid {
+            display: grid;
+            grid-template-columns: 248px 1fr;
+            gap: 1.4rem;
+            align-items: start;
+        }
+
+        @media (max-width: 780px) {
+            .vn-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .vn-sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .vn-card {
+            background: #fff;
+            border: 1px solid #e8e2ff;
+            border-radius: 16px;
+            padding: 1.2rem;
+            box-shadow: 0 2px 10px rgba(108, 92, 252, .07);
+        }
+
+        .vn-card-label {
+            font-size: .68rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: .07em;
+            color: #b0a3d4;
+            margin: 0 0 .9rem;
+        }
+
+        .fi {
+            display: flex;
+            align-items: flex-start;
+            gap: .55rem;
+            padding: .5rem 0;
+            border-bottom: 1px solid #f2eeff;
+        }
+
+        .fi:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+
+        .fi:first-of-type {
+            padding-top: 0;
+        }
+
+        .fi-ico {
+            font-size: .95rem;
+            width: 20px;
+            flex-shrink: 0;
+            margin-top: 1px;
+        }
+
+        .fi-lbl {
+            font-size: .68rem;
+            color: #bbb;
+            margin-bottom: 1px;
+        }
+
+        .fi-val {
+            font-size: .83rem;
+            font-weight: 600;
+            color: #1a1242;
+            word-break: break-word;
+        }
+
+        .vn-tools {
+            display: flex;
+            flex-direction: column;
+            gap: .5rem;
+        }
+
+        .vn-tool-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: .45rem;
+            width: 100%;
+            padding: .65rem 1rem;
+            border: none;
+            border-radius: 10px;
+            font-size: .84rem;
+            font-weight: 600;
+            cursor: pointer;
+            background: linear-gradient(135deg, #7c5cfc, #5a3fd8);
+            color: #fff;
+            transition: opacity .15s, transform .12s, box-shadow .12s;
+        }
+
+        .vn-tool-btn:hover {
+            opacity: .9;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 14px rgba(108, 92, 252, .28);
+        }
+
+        .vn-panel {
+            background: #fff;
+            border: 1px solid #e8e2ff;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(108, 92, 252, .07);
+        }
+
+        .vn-panel-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: .85rem 1.2rem;
+            background: #fff;
+            border-bottom: 1px solid #eee8ff;
+        }
+
+        .vn-panel-title {
+            font-size: .95rem;
+            font-weight: 700;
+            color: #1a1242;
+        }
+
+        .vn-dl-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            background: #7c5cfc;
+            color: #fff;
+            border: none;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background .15s;
+            flex-shrink: 0;
+        }
+
+        .vn-dl-btn:hover {
+            background: #5a3fd8;
+        }
+
+        .vn-scroll {
+            max-height: 76vh;
+            overflow-y: auto;
+            overflow-x: hidden;
+            background: #eae6f8;
+            padding: 18px 14px;
+        }
+
+        .vn-scroll::-webkit-scrollbar {
+            width: 5px;
+        }
+
+        .vn-scroll::-webkit-scrollbar-thumb {
+            background: #c4bbf0;
+            border-radius: 10px;
+        }
+
+        .pg-label {
+            text-align: center;
+            font-size: .72rem;
+            color: #999;
+            margin-bottom: 7px;
+            font-weight: 500;
+        }
+
+        .pg-card {
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 12px rgba(80, 60, 180, .12);
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+
+        .pg-card:last-child {
+            margin-bottom: 0;
+        }
+
+        .pg-card img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        /* slide content */
+        .slide-body {
+            padding: 1.6rem 1.8rem;
+            font-family: 'DM Sans', 'Segoe UI', sans-serif;
+        }
+
+        .slide-title {
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: #1a1242;
+            margin-bottom: .85rem;
+            padding-bottom: .5rem;
+            border-bottom: 2px solid #ede8ff;
+        }
+
+        .slide-body ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .slide-body ul li {
+            position: relative;
+            padding-left: 1.1rem;
+            font-size: .88rem;
+            line-height: 1.75;
+            color: #2d2450;
+            margin-bottom: .25rem;
+        }
+
+        .slide-body ul li::before {
+            content: '•';
+            position: absolute;
+            left: 0;
+            color: #7c5cfc;
+            font-weight: 700;
+        }
+
+        .slide-body ul li.sub {
+            padding-left: 2rem;
+            color: #555;
+            font-size: .84rem;
+        }
+
+        .slide-body ul li.sub::before {
+            left: .9rem;
+            color: #bbb;
+            content: '◦';
+        }
+
+        /* notice for image-only pages */
+        .img-notice {
+            padding: .5rem 1rem;
+            font-size: .72rem;
+            color: #bbb;
+            text-align: center;
+            background: #faf8ff;
+            border-top: 1px solid #eee8ff;
+        }
+
+        /* skeleton */
+        .vn-skel {
+            padding: 1.6rem;
+            background: #fff;
+            border-radius: 8px;
+        }
+
+        .sk {
+            height: 13px;
+            border-radius: 6px;
+            margin-bottom: 9px;
+            background: linear-gradient(90deg, #dbd4f8 25%, #cdc3f5 50%, #dbd4f8 75%);
+            background-size: 200% 100%;
+            animation: sk-shine 1.3s ease infinite;
+        }
+
+        .sk.s {
+            width: 42%;
+        }
+
+        .sk.m {
+            width: 68%;
+        }
+
+        @keyframes sk-shine {
+            0% {
+                background-position: 200% 0
+            }
+
+            100% {
+                background-position: -200% 0
+            }
+        }
+
+        .vn-feat-row {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin-top: 1.4rem;
+        }
+
+        @media (max-width: 680px) {
+            .vn-feat-row {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .vn-feat {
+            background: #fff;
+            border: 1px solid #e8e2ff;
+            border-radius: 14px;
+            padding: 1.3rem 1rem 1.1rem;
+            text-align: center;
+            transition: box-shadow .16s, transform .16s;
+        }
+
+        .vn-feat:hover {
+            box-shadow: 0 8px 24px rgba(108, 92, 252, .13);
+            transform: translateY(-2px);
+        }
+
+        .vn-feat-ico {
+            font-size: 1.75rem;
+            margin-bottom: .45rem;
+        }
+
+        .vn-feat-name {
+            font-size: .86rem;
+            font-weight: 700;
+            color: #1a1242;
+            margin-bottom: .3rem;
+        }
+
+        .vn-feat-desc {
+            font-size: .74rem;
+            color: #999;
+            line-height: 1.5;
+            margin-bottom: .85rem;
+        }
+
+        .vn-feat-btn {
+            background: linear-gradient(135deg, #7c5cfc, #5a3fd8);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            padding: .48rem 1.2rem;
+            font-size: .8rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: opacity .12s;
+        }
+
+        .vn-feat-btn:hover {
+            opacity: .88;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="navbar-placeholder"></div>
+    <main class="main">
+        <div class="vn-wrap">
+
+            <nav class="vn-crumb">
+                <a href="dashboard.html">My Notes</a>
+                <span>›</span>
+                <span id="bc-name" style="color:#555;font-weight:500;">Loading…</span>
+            </nav>
+
+            <div class="vn-titlebar">
+                <h1>📄 View Note</h1>
+                <a class="vn-back" href="dashboard.html">← Back to Notes</a>
+            </div>
+
+            <div class="vn-grid">
+                <div class="vn-sidebar">
+                    <div class="vn-card">
+                        <p class="vn-card-label">File Information</p>
+                        <div class="fi"><span class="fi-ico">📄</span>
+                            <div>
+                                <div class="fi-lbl">File Name</div>
+                                <div class="fi-val" id="fi-name">—</div>
+                            </div>
+                        </div>
+                        <div class="fi"><span class="fi-ico">💾</span>
+                            <div>
+                                <div class="fi-lbl">File Size</div>
+                                <div class="fi-val" id="fi-size">—</div>
+                            </div>
+                        </div>
+                        <div class="fi"><span class="fi-ico">🗂️</span>
+                            <div>
+                                <div class="fi-lbl">File Type</div>
+                                <div class="fi-val" id="fi-type">—</div>
+                            </div>
+                        </div>
+                        <div class="fi"><span class="fi-ico">📅</span>
+                            <div>
+                                <div class="fi-lbl">Upload Date</div>
+                                <div class="fi-val" id="fi-date">—</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="vn-card vn-tools">
+                        <p class="vn-card-label">AI Tools</p>
+                        <button class="vn-tool-btn" id="btn-summary">🧠 Generate Summary</button>
+                        <button class="vn-tool-btn" id="btn-quiz">📝 Generate Quiz</button>
+                        <button class="vn-tool-btn" id="btn-chat">💬 Ask AI</button>
+                    </div>
+                </div>
+
+                <div class="vn-panel">
+                    <div class="vn-panel-head">
+                        <span class="vn-panel-title">Content Preview</span>
+                        <button class="vn-dl-btn" id="dl-btn" title="Download">⬇</button>
+                    </div>
+                    <div class="vn-scroll">
+                        <div id="vn-skel">
+                            <div class="vn-skel">
+                                <div class="sk"></div>
+                                <div class="sk s"></div>
+                                <div class="sk"></div>
+                                <div class="sk m"></div>
+                                <div class="sk"></div>
+                            </div>
+                        </div>
+                        <div id="vn-content" style="display:none;"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="vn-feat-row">
+                <div class="vn-feat">
+                    <div class="vn-feat-ico">📑</div>
+                    <div class="vn-feat-name">Generate Summary</div>
+                    <div class="vn-feat-desc">AI-powered key points from your note.</div>
+                    <button class="vn-feat-btn" id="fc-summary">Summarise</button>
+                </div>
+                <div class="vn-feat">
+                    <div class="vn-feat-ico">📝</div>
+                    <div class="vn-feat-name">Generate Quiz</div>
+                    <div class="vn-feat-desc">Test yourself with auto-generated questions.</div>
+                    <button class="vn-feat-btn" id="fc-quiz">Take Quiz</button>
+                </div>
+                <div class="vn-feat">
+                    <div class="vn-feat-ico">🤖</div>
+                    <div class="vn-feat-name">Ask AI</div>
+                    <div class="vn-feat-desc">Chat about anything in your notes.</div>
+                    <button class="vn-feat-btn" id="fc-chat">Ask AI</button>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <script src="../js/auth.js"></script>
+    <script src="../js/upload.js"></script>
+    <script src="../js/summary.js"></script>
+    <script src="../js/quiz.js"></script>
+    <script src="../js/chat.js"></script>
+    <script src="../js/main.js"></script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", async () => {
+            requireAuth();
+            const params = new URLSearchParams(window.location.search);
+            const noteId = params.get("id");
+            if (!noteId) return;
+
+            const note = await fetchNoteById(noteId);
+            if (!note) { alert("Note not found."); window.location.href = "dashboard.html"; return; }
+
+            document.getElementById("bc-name").textContent = note.name;
+            document.getElementById("fi-name").textContent = note.name || "—";
+            document.getElementById("fi-size").textContent = note.file_size || "—";
+            document.getElementById("fi-type").textContent = note.file_type || "—";
+            document.getElementById("fi-date").textContent = note.upload_date || "—";
+
+            const go = p => () => { window.location.href = p; };
+            document.getElementById("btn-summary").addEventListener("click", go(`summary.html?id=${noteId}`));
+            document.getElementById("btn-quiz").addEventListener("click", go(`quiz.html?id=${noteId}`));
+            document.getElementById("btn-chat").addEventListener("click", go(`chat.html?id=${noteId}`));
+            document.getElementById("fc-summary").addEventListener("click", go(`summary.html?id=${noteId}`));
+            document.getElementById("fc-quiz").addEventListener("click", go(`quiz.html?id=${noteId}`));
+            document.getElementById("fc-chat").addEventListener("click", go(`chat.html?id=${noteId}`));
+
+            document.getElementById("dl-btn").addEventListener("click", () => {
+                const a = Object.assign(document.createElement("a"), {
+                    href: URL.createObjectURL(new Blob([note.content], { type: "text/plain" })),
+                    download: note.name + ".txt"
+                });
+                a.click(); URL.revokeObjectURL(a.href);
+            });
+
+            const skelEl = document.getElementById("vn-skel");
+            const contentEl = document.getElementById("vn-content");
+            skelEl.style.display = "none";
+            contentEl.style.display = "block";
+
+            if (!note.content) {
+                contentEl.innerHTML = '<div class="pg-label">—</div><div class="pg-card" style="padding:2.5rem;text-align:center;color:#bbb;">No content available.</div>';
+                return;
+            }
+
+            const raw = note.content;
+            const isHtml = raw.trim().startsWith('<');
+
+            if (isHtml) {
+                // ── pdf2image: proper page images ──────────────────────────────
+                const tmp = document.createElement('div');
+                tmp.innerHTML = raw;
+                const pages = tmp.querySelectorAll('.pdf-page');
+
+                if (pages.length > 0) {
+                    let html = '';
+                    pages.forEach((pg, i) => {
+                        const imgEl = pg.querySelector('img');
+                        const preEl = pg.querySelector('.pdf-plain');
+                        html += `<div class="pg-label">Page ${i + 1}</div>`;
+
+                        if (imgEl) {
+                            // Full page image — render directly, no notice needed
+                            html += `<div class="pg-card">${pg.innerHTML}</div>`;
+                        } else if (preEl) {
+                            const text = preEl.textContent || '';
+                            html += `<div class="pg-card"><div class="slide-body">${buildSlide(text)}</div></div>`;
+                        } else {
+                            html += `<div class="pg-card" style="padding:1.5rem;">${esc(pg.textContent)}</div>`;
+                        }
+                    });
+                    contentEl.innerHTML = html;
+                } else {
+                    contentEl.innerHTML = `<div class="pg-label">Page 1</div><div class="pg-card" style="padding:1.5rem;">${esc(raw)}</div>`;
+                }
+
+            } else {
+                // ── PyPDF2 plain text with literal 'n' newlines ─────────────────
+                const cleaned = raw.replace(/\\n/g, '\n').replace(/\\t/g, '  ');
+
+                // PyPDF2 stores each page as: <pageNumber><content>
+                // e.g. "1Module 3...", "22Chapter 3...", "66Chapter 3...", "3Data Quality..."
+                // The page numbers can be 1-3 digits and appear at the very START of each chunk.
+                // We split on a boundary where we see: end of prior content + digits + capital letter.
+                // Use a look-ahead that matches: start-of-string OR after non-digit, then 1-3 digits, then capital.
+                const pageChunks = cleaned.split(/(?<!\d)(?=\d{1,3}[A-Z])/).filter(s => s.trim());
+
+                let html = '';
+                let pageNum = 1;
+
+                pageChunks.forEach(chunk => {
+                    // Strip the leading page-number digits (1–3 digits at very start)
+                    // e.g. "66Chapter" → "Chapter", "5Form" → "Form", "101Data" → "Data"
+                    const body = chunk.replace(/^\d{1,3}(?=[A-Z])/, '').trim();
+                    if (!body) return;
+
+                    html += `<div class="pg-label">Page ${pageNum++}</div>`;
+                    html += `<div class="pg-card"><div class="slide-body">${buildSlide(body)}</div></div>`;
+                });
+
+                if (!html) {
+                    html = `<div class="pg-label">Content</div><div class="pg-card"><div class="slide-body">${buildSlide(cleaned)}</div></div>`;
+                }
+
+                contentEl.innerHTML = html;
+            }
+        });
+
+        /**
+         * Converts raw PyPDF2 slide text into clean HTML.
+         *
+         * PyPDF2 uses literal 'n' instead of '\n' between lines. E.g.:
+         *   "Chapter 3: Data PreprocessingnData Preprocessing: An OverviewnData Quality"
+         *
+         * First segment → slide title (bold, underlined)
+         * Remaining segments → bullet points
+         */
+        function buildSlide(text) {
+            if (!text) return '';
+
+            // Split on literal 'n' that precedes an uppercase letter, digit, or bullet
+            const lines = text
+                .split(/n(?=[A-Z\d•·\-\u2022])/)
+                .map(l => l.trim())
+                .filter(l => l.length > 0);
+
+            if (!lines.length) return `<p style="font-size:.88rem;color:#444;line-height:1.75;">${esc(text)}</p>`;
+
+            // Strip residual leading digits from title
+            const title = lines[0].replace(/^\d+/, "").trim();
+            const bullets = lines.slice(1);
+
+            let html = `<div class="slide-title">${esc(title)}</div>`;
+
+            if (bullets.length) {
+                html += '<ul>';
+                bullets.forEach(b => {
+                    // Sub-bullet heuristic: starts lowercase, or short phrase after main item
+                    const isSub = /^[a-z•·\-]/.test(b) && b.length < 80;
+                    html += `<li class="${isSub ? 'sub' : ''}">${esc(b)}</li>`;
+                });
+                html += '</ul>';
+            }
+
+            return html;
+        }
+
+        function esc(s) {
+            return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        }
+    </script>
+
+</body>
+
+</html> -->
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>View Note — Smart Study Companion</title>
+    <link rel="stylesheet" href="../css/style.css" />
+    <style>
+        .vn-wrap {
+            max-width: 1180px;
+            margin: 0 auto;
+            padding: 0 2rem 4rem;
+        }
+
+        /* breadcrumb */
+        .vn-crumb {
+            display: flex;
+            align-items: center;
+            gap: .4rem;
+            font-size: .8rem;
+            color: #aaa;
+            margin-bottom: 1.4rem;
+        }
+
+        .vn-crumb a {
+            color: #7c5cfc;
+            text-decoration: none;
+        }
+
+        .vn-crumb a:hover {
+            text-decoration: underline;
+        }
+
+        /* title bar */
+        .vn-titlebar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1.6rem;
+            flex-wrap: wrap;
+            gap: .75rem;
+        }
+
+        .vn-titlebar h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1a1242;
+            margin: 0;
+        }
+
+        .vn-back {
+            font-size: .82rem;
+            color: #7c5cfc;
+            background: #f4f0ff;
+            border: 1px solid #ddd5ff;
+            border-radius: 8px;
+            padding: .4rem .95rem;
+            text-decoration: none;
+            transition: background .15s;
+        }
+
+        .vn-back:hover {
+            background: #ebe3ff;
+        }
+
+        /* two-col grid */
+        .vn-grid {
+            display: grid;
+            grid-template-columns: 248px 1fr;
+            gap: 1.4rem;
+            align-items: start;
+        }
+
+        @media (max-width: 780px) {
+            .vn-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* sidebar */
+        .vn-sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .vn-card {
+            background: #fff;
+            border: 1px solid #e8e2ff;
+            border-radius: 16px;
+            padding: 1.2rem;
+            box-shadow: 0 2px 10px rgba(108, 92, 252, .07);
+        }
+
+        .vn-card-label {
+            font-size: .68rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: .07em;
+            color: #b0a3d4;
+            margin: 0 0 .9rem;
+        }
+
+        .fi {
+            display: flex;
+            align-items: flex-start;
+            gap: .55rem;
+            padding: .5rem 0;
+            border-bottom: 1px solid #f2eeff;
+        }
+
+        .fi:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+
+        .fi:first-of-type {
+            padding-top: 0;
+        }
+
+        .fi-ico {
+            font-size: .95rem;
+            width: 20px;
+            flex-shrink: 0;
+            margin-top: 1px;
+        }
+
+        .fi-lbl {
+            font-size: .68rem;
+            color: #bbb;
+            margin-bottom: 1px;
+        }
+
+        .fi-val {
+            font-size: .83rem;
+            font-weight: 600;
+            color: #1a1242;
+            word-break: break-word;
+        }
+
+        /* AI tool buttons */
+        .vn-tools {
+            display: flex;
+            flex-direction: column;
+            gap: .5rem;
+        }
+
+        .vn-tool-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: .45rem;
+            width: 100%;
+            padding: .65rem 1rem;
+            border: none;
+            border-radius: 10px;
+            font-size: .84rem;
+            font-weight: 600;
+            cursor: pointer;
+            background: linear-gradient(135deg, #7c5cfc, #5a3fd8);
+            color: #fff;
+            transition: opacity .15s, transform .12s, box-shadow .12s;
+        }
+
+        .vn-tool-btn:hover {
+            opacity: .9;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 14px rgba(108, 92, 252, .28);
+        }
+
+        /* ── PREVIEW PANEL ── */
+        .vn-panel {
+            background: #fff;
+            border: 1px solid #e8e2ff;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(108, 92, 252, .07);
+        }
+
+        .vn-panel-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: .85rem 1.2rem;
+            background: #fff;
+            border-bottom: 1px solid #eee8ff;
+        }
+
+        .vn-panel-title {
+            font-size: .95rem;
+            font-weight: 700;
+            color: #1a1242;
+        }
+
+        .vn-dl-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            background: #7c5cfc;
+            color: #fff;
+            border: none;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background .15s;
+        }
+
+        .vn-dl-btn:hover {
+            background: #5a3fd8;
+        }
+
+        /* lavender scroll area */
+        .vn-scroll {
+            max-height: 76vh;
+            overflow-y: auto;
+            overflow-x: hidden;
+            background: #eae6f8;
+            padding: 18px 14px;
+        }
+
+        .vn-scroll::-webkit-scrollbar {
+            width: 5px;
+        }
+
+        .vn-scroll::-webkit-scrollbar-thumb {
+            background: #c4bbf0;
+            border-radius: 10px;
+        }
+
+        /* page label */
+        .pg-label {
+            text-align: center;
+            font-size: .72rem;
+            color: #999;
+            margin-bottom: 7px;
+            font-weight: 500;
+            letter-spacing: .02em;
+        }
+
+        /* white page card — the PDF page sits inside */
+        .pg-card {
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 14px rgba(80, 60, 180, .13);
+            margin-bottom: 22px;
+            overflow: hidden;
+        }
+
+        .pg-card:last-child {
+            margin-bottom: 0;
+        }
+
+        .pg-card img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        /* ── OLD TEXT fallback (shown when pdf2image not used) ── */
+        .pg-card .text-notice {
+            display: flex;
+            align-items: flex-start;
+            gap: .6rem;
+            background: #fff8ec;
+            border: 1px solid #fde68a;
+            border-radius: 8px;
+            padding: .75rem 1rem;
+            margin: 1rem 1.2rem 0;
+            font-size: .78rem;
+            color: #92400e;
+            line-height: 1.5;
+        }
+
+        .pg-card .slide-body {
+            padding: 1.4rem 1.6rem;
+            font-family: 'DM Sans', 'Segoe UI', sans-serif;
+        }
+
+        .slide-body .slide-title {
+            font-size: 1rem;
+            font-weight: 700;
+            color: #1a1242;
+            margin-bottom: .75rem;
+            padding-bottom: .45rem;
+            border-bottom: 2px solid #ede8ff;
+        }
+
+        .slide-body ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .slide-body ul li {
+            position: relative;
+            padding-left: 1.1rem;
+            font-size: .87rem;
+            line-height: 1.75;
+            color: #2d2450;
+            margin-bottom: .2rem;
+        }
+
+        .slide-body ul li::before {
+            content: '•';
+            position: absolute;
+            left: 0;
+            color: #7c5cfc;
+            font-weight: 700;
+        }
+
+        .slide-body ul li.sub {
+            padding-left: 2rem;
+            color: #666;
+            font-size: .83rem;
+        }
+
+        .slide-body ul li.sub::before {
+            left: .9rem;
+            color: #bbb;
+            content: '◦';
+        }
+
+        /* skeleton */
+        .vn-skel-wrap {
+            padding: 0;
+        }
+
+        .sk-card {
+            background: #fff;
+            border-radius: 8px;
+            padding: 1.6rem;
+            margin-bottom: 22px;
+        }
+
+        .sk {
+            height: 13px;
+            border-radius: 6px;
+            margin-bottom: 9px;
+            background: linear-gradient(90deg, #dbd4f8 25%, #cdc3f5 50%, #dbd4f8 75%);
+            background-size: 200% 100%;
+            animation: sk-shine 1.3s ease infinite;
+        }
+
+        .sk.s {
+            width: 42%;
+        }
+
+        .sk.m {
+            width: 68%;
+        }
+
+        @keyframes sk-shine {
+            0% {
+                background-position: 200% 0
+            }
+
+            100% {
+                background-position: -200% 0
+            }
+        }
+
+        /* feature cards */
+        .vn-feat-row {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin-top: 1.4rem;
+        }
+
+        @media (max-width: 680px) {
+            .vn-feat-row {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .vn-feat {
+            background: #fff;
+            border: 1px solid #e8e2ff;
+            border-radius: 14px;
+            padding: 1.3rem 1rem 1.1rem;
+            text-align: center;
+            transition: box-shadow .16s, transform .16s;
+        }
+
+        .vn-feat:hover {
+            box-shadow: 0 8px 24px rgba(108, 92, 252, .13);
+            transform: translateY(-2px);
+        }
+
+        .vn-feat-ico {
+            font-size: 1.75rem;
+            margin-bottom: .45rem;
+        }
+
+        .vn-feat-name {
+            font-size: .86rem;
+            font-weight: 700;
+            color: #1a1242;
+            margin-bottom: .3rem;
+        }
+
+        .vn-feat-desc {
+            font-size: .74rem;
+            color: #999;
+            line-height: 1.5;
+            margin-bottom: .85rem;
+        }
+
+        .vn-feat-btn {
+            background: linear-gradient(135deg, #7c5cfc, #5a3fd8);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            padding: .48rem 1.2rem;
+            font-size: .8rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: opacity .12s;
+        }
+
+        .vn-feat-btn:hover {
+            opacity: .88;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="navbar-placeholder"></div>
+    <main class="main">
+        <div class="vn-wrap">
+
+            <nav class="vn-crumb">
+                <a href="dashboard.html">My Notes</a>
+                <span>›</span>
+                <span id="bc-name" style="color:#555;font-weight:500;">Loading…</span>
+            </nav>
+
+            <div class="vn-titlebar">
+                <h1>📄 View Note</h1>
+                <a class="vn-back" href="dashboard.html">← Back to Notes</a>
+            </div>
+
+            <div class="vn-grid">
+
+                <!-- sidebar -->
+                <div class="vn-sidebar">
+                    <div class="vn-card">
+                        <p class="vn-card-label">File Information</p>
+                        <div class="fi"><span class="fi-ico">📄</span>
+                            <div>
+                                <div class="fi-lbl">File Name</div>
+                                <div class="fi-val" id="fi-name">—</div>
+                            </div>
+                        </div>
+                        <div class="fi"><span class="fi-ico">💾</span>
+                            <div>
+                                <div class="fi-lbl">File Size</div>
+                                <div class="fi-val" id="fi-size">—</div>
+                            </div>
+                        </div>
+                        <div class="fi"><span class="fi-ico">🗂️</span>
+                            <div>
+                                <div class="fi-lbl">File Type</div>
+                                <div class="fi-val" id="fi-type">—</div>
+                            </div>
+                        </div>
+                        <div class="fi"><span class="fi-ico">📅</span>
+                            <div>
+                                <div class="fi-lbl">Upload Date</div>
+                                <div class="fi-val" id="fi-date">—</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="vn-card vn-tools">
+                        <p class="vn-card-label">AI Tools</p>
+                        <button class="vn-tool-btn" id="btn-summary">🧠 Generate Summary</button>
+                        <button class="vn-tool-btn" id="btn-quiz">📝 Generate Quiz</button>
+                        <button class="vn-tool-btn" id="btn-chat">💬 Ask AI</button>
+                    </div>
+                </div>
+
+                <!-- preview panel -->
+                <div class="vn-panel">
+                    <div class="vn-panel-head">
+                        <span class="vn-panel-title">Content Preview</span>
+                        <button class="vn-dl-btn" id="dl-btn" title="Download">⬇</button>
+                    </div>
+                    <div class="vn-scroll">
+                        <!-- skeleton shown while loading -->
+                        <div id="vn-skel" class="vn-skel-wrap">
+                            <div class="sk-card">
+                                <div class="sk"></div>
+                                <div class="sk s"></div>
+                                <div class="sk"></div>
+                                <div class="sk m"></div>
+                                <div class="sk"></div>
+                            </div>
+                            <div class="sk-card">
+                                <div class="sk"></div>
+                                <div class="sk m"></div>
+                                <div class="sk s"></div>
+                            </div>
+                        </div>
+                        <div id="vn-content" style="display:none;"></div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- feature cards row -->
+            <div class="vn-feat-row">
+                <div class="vn-feat">
+                    <div class="vn-feat-ico">📑</div>
+                    <div class="vn-feat-name">Generate Summary</div>
+                    <div class="vn-feat-desc">AI-powered key points from your note.</div>
+                    <button class="vn-feat-btn" id="fc-summary">Summarise</button>
+                </div>
+                <div class="vn-feat">
+                    <div class="vn-feat-ico">📝</div>
+                    <div class="vn-feat-name">Generate Quiz</div>
+                    <div class="vn-feat-desc">Test yourself with auto-generated questions.</div>
+                    <button class="vn-feat-btn" id="fc-quiz">Take Quiz</button>
+                </div>
+                <div class="vn-feat">
+                    <div class="vn-feat-ico">🤖</div>
+                    <div class="vn-feat-name">Ask AI</div>
+                    <div class="vn-feat-desc">Chat about anything in your notes.</div>
+                    <button class="vn-feat-btn" id="fc-chat">Ask AI</button>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <script src="../js/auth.js"></script>
+    <script src="../js/upload.js"></script>
+    <script src="../js/summary.js"></script>
+    <script src="../js/quiz.js"></script>
+    <script src="../js/chat.js"></script>
+    <script src="../js/main.js"></script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", async () => {
+            requireAuth();
+            const params = new URLSearchParams(window.location.search);
+            const noteId = params.get("id");
+            if (!noteId) return;
+
+            const note = await fetchNoteById(noteId);
+            if (!note) { alert("Note not found."); window.location.href = "dashboard.html"; return; }
+
+            // populate sidebar
+            document.getElementById("bc-name").textContent = note.name;
+            document.getElementById("fi-name").textContent = note.name || "—";
+            document.getElementById("fi-size").textContent = note.file_size || "—";
+            document.getElementById("fi-type").textContent = note.file_type || "—";
+            document.getElementById("fi-date").textContent = note.upload_date || "—";
+
+            // navigation
+            const go = p => () => { window.location.href = p; };
+            document.getElementById("btn-summary").addEventListener("click", go(`summary.html?id=${noteId}`));
+            document.getElementById("btn-quiz").addEventListener("click", go(`quiz.html?id=${noteId}`));
+            document.getElementById("btn-chat").addEventListener("click", go(`chat.html?id=${noteId}`));
+            document.getElementById("fc-summary").addEventListener("click", go(`summary.html?id=${noteId}`));
+            document.getElementById("fc-quiz").addEventListener("click", go(`quiz.html?id=${noteId}`));
+            document.getElementById("fc-chat").addEventListener("click", go(`chat.html?id=${noteId}`));
+
+            // download
+            document.getElementById("dl-btn").addEventListener("click", () => {
+                const a = Object.assign(document.createElement("a"), {
+                    href: URL.createObjectURL(new Blob([note.content], { type: "text/plain" })),
+                    download: note.name + ".txt"
+                });
+                a.click(); URL.revokeObjectURL(a.href);
+            });
+
+            // ── render ──────────────────────────────────────────────────────────────
+            const skelEl = document.getElementById("vn-skel");
+            const contentEl = document.getElementById("vn-content");
+
+            skelEl.style.display = "none";
+            contentEl.style.display = "block";
+
+            if (!note.content) {
+                contentEl.innerHTML = noContent();
+                return;
+            }
+
+            const raw = note.content.trim();
+            const isHtml = raw.startsWith('<');
+
+            if (isHtml) {
+                // ── pdf2image content: <div class="pdf-page"><img src="data:..."></div> ──
+                // This is the CORRECT path — shows the actual PDF page as a screenshot.
+                const tmp = document.createElement('div');
+                tmp.innerHTML = raw;
+                const pages = tmp.querySelectorAll('.pdf-page');
+
+                if (pages.length > 0) {
+                    let html = '';
+
+                    pages.forEach((pg, i) => {
+                        const imgEl = pg.querySelector('img');
+                        html += `<div class="pg-label">Page ${i + 1}</div>`;
+
+                        if (imgEl) {
+                            // ✅ Full PDF page image — show as-is
+                            html += `<div class="pg-card"><img src="${imgEl.src}" alt="Page ${i + 1}" loading="lazy" /></div>`;
+                        } else {
+                            // pdfminer / pdfplumber text fallback (rare)
+                            const text = pg.textContent.trim();
+                            html += `<div class="pg-card">${textFallback(text, i + 1)}</div>`;
+                        }
+                    });
+
+                    contentEl.innerHTML = html;
+
+                } else {
+                    // HTML but no .pdf-page divs — just render raw
+                    contentEl.innerHTML = `<div class="pg-label">Page 1</div><div class="pg-card" style="padding:1.5rem;">${raw}</div>`;
+                }
+
+            } else {
+                // ── Legacy PyPDF2 plain text (old notes uploaded before pdf2image was set up) ──
+                // Show a re-upload notice + best-effort text rendering
+                contentEl.innerHTML = legacyNotice() + renderLegacyText(raw);
+            }
+        });
+
+        // ── Renders a legacy (PyPDF2) note as best-effort slide cards ──────────────
+        function renderLegacyText(raw) {
+            const cleaned = raw.replace(/\\n/g, '\n').replace(/\\t/g, '  ');
+
+            // Split on page boundaries: 1-3 digits immediately before a capital letter
+            const chunks = cleaned.split(/(?<!\d)(?=\d{1,3}[A-Z])/).filter(s => s.trim());
+
+            if (!chunks.length) {
+                return `<div class="pg-label">Content</div><div class="pg-card">${textFallback(cleaned, 1)}</div>`;
+            }
+
+            return chunks.map((chunk, i) => {
+                // Strip the leading page-number digits (e.g. "66Chapter" → "Chapter")
+                const body = chunk.replace(/^\d{1,3}(?=[A-Z])/, '').trim();
+                if (!body) return '';
+                return `<div class="pg-label">Page ${i + 1}</div><div class="pg-card">${textFallback(body, i + 1)}</div>`;
+            }).join('');
+        }
+
+        // ── Renders plain text as a clean slide card with title + bullets ──────────
+        function textFallback(text, pageNum) {
+            if (!text) return '<p style="padding:1.5rem;color:#bbb;text-align:center;">Empty page.</p>';
+
+            // Split on literal 'n' before capital/digit (PyPDF2 newline artifact)
+            const lines = text
+                .split(/n(?=[A-Z\d])/)
+                .map(l => l.replace(/^\d{1,3}(?=[A-Z])/, '').trim())  // strip stray numbers
+                .filter(l => l.length > 1);
+
+            if (!lines.length) {
+                return `<div class="slide-body"><p style="font-size:.87rem;line-height:1.75;color:#333;">${esc(text)}</p></div>`;
+            }
+
+            const title = lines[0];
+            const bullets = lines.slice(1);
+
+            let html = `<div class="slide-body"><div class="slide-title">${esc(title)}</div>`;
+            if (bullets.length) {
+                html += '<ul>';
+                bullets.forEach(b => {
+                    const isSub = /^[a-z•·\-]/.test(b) && b.length < 90;
+                    html += `<li class="${isSub ? 'sub' : ''}">${esc(b)}</li>`;
+                });
+                html += '</ul>';
+            }
+            html += '</div>';
+            return html;
+        }
+
+        // ── Yellow notice banner for legacy text notes ─────────────────────────────
+        function legacyNotice() {
+            return `
+    <div style="display:flex;align-items:flex-start;gap:.6rem;background:#fff8ec;border:1px solid #fde68a;border-radius:8px;padding:.75rem 1rem;margin-bottom:16px;font-size:.78rem;color:#92400e;line-height:1.55;">
+        <span style="font-size:1rem;flex-shrink:0;">⚠️</span>
+        <span>This note was uploaded before visual rendering was enabled. <strong>Re-upload the PDF</strong> to see actual page images with diagrams, colours, and formatting.</span>
+    </div>`;
+        }
+
+        function noContent() {
+            return `<div class="pg-label">—</div><div class="pg-card" style="padding:2.5rem;text-align:center;color:#bbb;">No content available.</div>`;
+        }
+
+        function esc(s) {
+            return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        }
+    </script>
+
+</body>
+
+</html>

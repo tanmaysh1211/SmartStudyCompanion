@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login — Smart Study Companion</title>
+    <link rel="stylesheet" href="../css/style.css" />
+    <link rel="stylesheet" href="../css/login.css" />
+</head>
+
+<body class="login-body">
+
+    <div class="login-container">
+        <div class="login-card">
+
+            <!-- Left: Form Side -->
+            <div class="login-form-side">
+
+                <!-- Tabs -->
+                <div class="login-tabs">
+                    <button class="tab-btn active" id="tab-login">Login</button>
+                    <button class="tab-btn" id="tab-signup">Sign Up</button>
+                </div>
+
+                <!-- Login Form -->
+                <form id="login-form" autocomplete="off" novalidate>
+                    <h2 class="form-title">LOGIN</h2>
+
+                    <div id="login-error" class="alert alert-error" style="display:none;"></div>
+
+                    <div class="form-group">
+                        <input class="input" type="email" id="email" name="email" placeholder="johndoe@example.com"
+                            required autocomplete="email" />
+                    </div>
+
+                    <div class="form-group">
+                        <div class="input-password-wrap">
+                            <input class="input" type="password" id="password" name="password" placeholder="Password"
+                                required autocomplete="current-password" />
+                            <button type="button" class="toggle-password" data-target="password"
+                                title="Show/hide password">👁</button>
+                        </div>
+                    </div>
+
+                    <button class="btn-primary btn-full" type="submit" id="login-btn">Login</button>
+
+                    <p class="form-footer">
+                        Don't have an account?
+                        <a href="#" id="switch-to-signup">Sign up</a>
+                    </p>
+                </form>
+
+                <!-- Signup Form (hidden by default) -->
+                <form id="signup-form" autocomplete="off" novalidate style="display:none;">
+                    <h2 class="form-title">SIGN UP</h2>
+
+                    <div id="signup-error" class="alert alert-error" style="display:none;"></div>
+
+                    <div class="form-group">
+                        <input class="input" type="text" id="signup-name" name="name" placeholder="Full Name" required
+                            autocomplete="name" />
+                    </div>
+
+                    <div class="form-group">
+                        <input class="input" type="email" id="signup-email" name="email"
+                            placeholder="johndoe@example.com" required autocomplete="email" />
+                    </div>
+
+                    <div class="form-group">
+                        <div class="input-password-wrap">
+                            <input class="input" type="password" id="signup-password" name="password"
+                                placeholder="Password (min 6 characters)" required autocomplete="new-password" />
+                            <button type="button" class="toggle-password" data-target="signup-password"
+                                title="Show/hide password">👁</button>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <input class="input" type="password" id="signup-confirm" name="confirm"
+                            placeholder="Confirm Password" required autocomplete="new-password" />
+                    </div>
+
+                    <button class="btn-primary btn-full" type="submit" id="signup-btn">Create Account</button>
+
+                    <p class="form-footer">
+                        Already have an account?
+                        <a href="#" id="switch-to-login">Login</a>
+                    </p>
+                </form>
+
+            </div><!-- /login-form-side -->
+
+            <!-- Right: Visual Side -->
+            <div class="login-visual-side">
+                <div class="login-visual-content">
+                    <div class="login-visual-icon">🎓</div>
+                    <h2 class="login-visual-title">Smart Study<br>Companion</h2>
+                    <p class="login-visual-sub">AI-Powered Learning Assistant</p>
+                    <ul class="login-features">
+                        <li>📂 Upload PDF &amp; text notes</li>
+                        <li>🧠 AI-generated summaries</li>
+                        <li>📝 Interactive quizzes</li>
+                        <li>💬 Ask AI about your content</li>
+                    </ul>
+                </div>
+            </div>
+
+        </div><!-- /login-card -->
+    </div><!-- /login-container -->
+
+    <!-- Scripts — auth.js must come before main.js -->
+    <script src="../js/auth.js"></script>
+    <script src="../js/upload.js"></script>
+    <script src="../js/summary.js"></script>
+    <script src="../js/quiz.js"></script>
+    <script src="../js/chat.js"></script>
+    <script src="../js/main.js"></script>
+
+    <script>
+        // Extra UX: show/hide password toggle
+        document.querySelectorAll(".toggle-password").forEach((btn) => {
+            btn.addEventListener("click", () => {
+                const input = document.getElementById(btn.dataset.target);
+                input.type = input.type === "password" ? "text" : "password";
+            });
+        });
+        // Quick switch links
+        document.getElementById("switch-to-signup")?.addEventListener("click", (e) => {
+            e.preventDefault();
+            document.getElementById("tab-signup").click();
+        });
+        document.getElementById("switch-to-login")?.addEventListener("click", (e) => {
+            e.preventDefault();
+            document.getElementById("tab-login").click();
+        });
+    </script>
+</body>
+
+</html>

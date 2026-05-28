@@ -1,0 +1,310 @@
+/* ============================================================
+   login.css  —  Smart Study Companion
+   Styles exclusive to login.html (login + signup forms).
+   Requires style.css to already be loaded.
+   ============================================================ */
+
+/* ── Page Body ────────────────────────────────────────────── */
+.login-body {
+    background: var(--clr-bg);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem;
+}
+
+/* ── Login Card Container ─────────────────────────────────── */
+.login-container {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.login-card {
+    background: var(--clr-white);
+    border-radius: 24px;
+    box-shadow: 0 10px 50px rgba(108, 99, 255, 0.18);
+    display: flex;
+    overflow: hidden;
+    width: 820px;
+    max-width: 100%;
+    min-height: 500px;
+}
+
+/* ── Form Side (left) ─────────────────────────────────────── */
+.login-form-side {
+    flex: 1;
+    padding: 3rem 2.5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+/* ── Tabs ─────────────────────────────────────────────────── */
+.login-tabs {
+    display: flex;
+    gap: 0;
+    background: var(--clr-primary-light);
+    border-radius: var(--radius-md);
+    padding: 4px;
+    margin-bottom: 2rem;
+}
+
+.tab-btn {
+    flex: 1;
+    padding: 9px 0;
+    background: transparent;
+    border: none;
+    border-radius: calc(var(--radius-md) - 2px);
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--clr-primary);
+    transition: all var(--transition);
+    cursor: pointer;
+}
+
+.tab-btn.active {
+    background: var(--clr-primary);
+    color: var(--clr-white);
+    box-shadow: var(--shadow-sm);
+}
+
+.tab-btn:not(.active):hover {
+    background: rgba(108, 99, 255, 0.1);
+}
+
+/* ── Form Titles ──────────────────────────────────────────── */
+.form-title {
+    font-family: var(--font-heading);
+    font-size: 1.7rem;
+    font-weight: 700;
+    color: var(--clr-text);
+    margin-bottom: 1.5rem;
+    text-align: center;
+    letter-spacing: -0.5px;
+}
+
+/* ── Password Input with Toggle ───────────────────────────── */
+.input-password-wrap {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.input-password-wrap .input {
+    padding-right: 44px;
+    /* room for the eye icon */
+}
+
+.toggle-password {
+    position: absolute;
+    right: 12px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1rem;
+    color: var(--clr-text-light);
+    padding: 4px;
+    line-height: 1;
+    transition: color var(--transition);
+    user-select: none;
+}
+
+.toggle-password:hover {
+    color: var(--clr-primary);
+}
+
+/* ── Submit Button ────────────────────────────────────────── */
+.login-form-side .btn-primary {
+    width: 100%;
+    justify-content: center;
+    padding: 13px;
+    font-size: 1rem;
+    margin-top: 0.5rem;
+    border-radius: var(--radius-md);
+}
+
+/* Loading state inside button */
+.login-form-side .btn-primary.loading {
+    opacity: 0.75;
+    pointer-events: none;
+}
+
+/* ── Footer Link ──────────────────────────────────────────── */
+.form-footer {
+    text-align: center;
+    font-size: 0.88rem;
+    color: var(--clr-text-light);
+    margin-top: 1.25rem;
+}
+
+.form-footer a {
+    color: var(--clr-primary);
+    font-weight: 500;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.form-footer a:hover {
+    text-decoration: underline;
+}
+
+/* ── Visual Side (right) ──────────────────────────────────── */
+.login-visual-side {
+    background: var(--clr-primary);
+    flex: 0 0 320px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 16px;
+    margin: 14px 14px 14px 0;
+    padding: 2.5rem 2rem;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Decorative circles */
+.login-visual-side::before,
+.login-visual-side::after {
+    content: "";
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.07);
+}
+
+.login-visual-side::before {
+    width: 260px;
+    height: 260px;
+    top: -80px;
+    right: -80px;
+}
+
+.login-visual-side::after {
+    width: 180px;
+    height: 180px;
+    bottom: -60px;
+    left: -60px;
+}
+
+.login-visual-content {
+    text-align: center;
+    color: var(--clr-white);
+    position: relative;
+    z-index: 1;
+}
+
+.login-visual-icon {
+    font-size: 5rem;
+    margin-bottom: 1rem;
+    animation: float 3s ease-in-out infinite;
+}
+
+.login-visual-title {
+    font-family: var(--font-heading);
+    font-size: 1.5rem;
+    font-weight: 700;
+    line-height: 1.3;
+    margin-bottom: 0.5rem;
+    color: var(--clr-white);
+}
+
+.login-visual-sub {
+    font-size: 0.88rem;
+    opacity: 0.78;
+    margin-bottom: 1.75rem;
+}
+
+/* Feature bullets on the visual side */
+.login-features {
+    list-style: none;
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+    gap: 0.65rem;
+}
+
+.login-features li {
+    font-size: 0.88rem;
+    opacity: 0.9;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* ── Input focus ring override ────────────────────────────── */
+.login-form-side .input:focus {
+    border-color: var(--clr-primary);
+    box-shadow: 0 0 0 3px rgba(108, 99, 255, 0.15);
+}
+
+/* ── Alert inside form ────────────────────────────────────── */
+.login-form-side .alert {
+    border-radius: var(--radius-md);
+    padding: 9px 14px;
+    font-size: 0.86rem;
+}
+
+/* ── Forgot password link ─────────────────────────────────── */
+.forgot-link {
+    display: block;
+    text-align: right;
+    font-size: 0.82rem;
+    color: var(--clr-primary);
+    margin-top: -0.4rem;
+    margin-bottom: 0.4rem;
+    cursor: pointer;
+}
+
+.forgot-link:hover {
+    text-decoration: underline;
+}
+
+/* ── Divider (or) ─────────────────────────────────────────── */
+.login-divider {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin: 1.25rem 0;
+    font-size: 0.82rem;
+    color: var(--clr-text-light);
+}
+
+.login-divider::before,
+.login-divider::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: var(--clr-border-light);
+}
+
+/* ── Responsive ───────────────────────────────────────────── */
+@media (max-width: 700px) {
+    .login-visual-side {
+        display: none;
+    }
+
+    .login-card {
+        border-radius: 20px;
+        min-height: auto;
+    }
+
+    .login-form-side {
+        padding: 2.5rem 1.75rem;
+    }
+}
+
+@media (max-width: 420px) {
+    .login-body {
+        padding: 1rem;
+    }
+
+    .login-form-side {
+        padding: 2rem 1.25rem;
+    }
+
+    .form-title {
+        font-size: 1.4rem;
+    }
+}

@@ -1,0 +1,335 @@
+/* ============================================================
+   dashboard.css  —  Smart Study Companion
+   Styles specific to dashboard.html.
+   Requires style.css to already be loaded.
+   ============================================================ */
+
+/* ── Dashboard Main ───────────────────────────────────────── */
+.dashboard-main {
+    padding-top: 0;
+}
+
+/* ── Greeting Banner ──────────────────────────────────────── */
+.dashboard-greeting {
+    background: linear-gradient(135deg, var(--clr-primary) 0%, #8b7cf8 100%);
+    border-radius: var(--radius-lg);
+    padding: 1.5rem 2rem;
+    margin-bottom: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    color: var(--clr-white);
+}
+
+.greeting-text h2 {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--clr-white);
+    margin-bottom: 0.2rem;
+}
+
+.greeting-text p {
+    font-size: 0.88rem;
+    opacity: 0.8;
+}
+
+.greeting-emoji {
+    font-size: 3rem;
+    animation: float 3s ease-in-out infinite;
+}
+
+/* ── Stats Bar ────────────────────────────────────────────── */
+.stats-bar {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+}
+
+.stat-pill {
+    background: var(--clr-white);
+    border-radius: var(--radius-full);
+    padding: 10px 22px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--clr-border-light);
+    flex: 1;
+    min-width: 160px;
+    justify-content: center;
+    transition: box-shadow var(--transition);
+}
+
+.stat-pill:hover {
+    box-shadow: var(--shadow-md);
+}
+
+.stat-pill-icon {
+    font-size: 1.2rem;
+}
+
+.stat-pill-num {
+    font-family: var(--font-heading);
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--clr-primary);
+    line-height: 1;
+}
+
+.stat-pill-label {
+    font-size: 0.8rem;
+    color: var(--clr-text-light);
+}
+
+/* ── Section Header with Action ───────────────────────────── */
+.section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+}
+
+/* ── Notes Toolbar ────────────────────────────────────────── */
+.notes-toolbar {
+    display: flex;
+    gap: 0.75rem;
+    margin-bottom: 1.25rem;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.search-input {
+    flex: 1;
+    min-width: 220px;
+}
+
+.sort-select {
+    min-width: 160px;
+}
+
+/* ── Note Card Hover Accent ───────────────────────────────── */
+.note-card::before {
+    content: "";
+    display: block;
+    height: 3px;
+    background: var(--clr-primary);
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+    opacity: 0;
+    margin: -1.25rem -1.25rem 1rem;
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+    transition: opacity var(--transition);
+}
+
+.note-card:hover::before {
+    opacity: 1;
+}
+
+/* ── Note Card Type Badge ─────────────────────────────────── */
+.note-type-badge {
+    display: inline-block;
+    background: var(--clr-primary-light);
+    color: var(--clr-primary);
+    border-radius: var(--radius-full);
+    padding: 2px 10px;
+    font-size: 0.72rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    letter-spacing: 0.3px;
+    text-transform: uppercase;
+}
+
+/* ── No Notes Placeholder ─────────────────────────────────── */
+.notes-empty {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 4rem 2rem;
+    background: var(--clr-white);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+}
+
+.notes-empty-icon {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+}
+
+.notes-empty h3 {
+    font-size: 1.15rem;
+    color: var(--clr-text);
+    margin-bottom: 0.5rem;
+}
+
+.notes-empty p {
+    font-size: 0.9rem;
+    color: var(--clr-text-light);
+    margin-bottom: 1.5rem;
+}
+
+/* ── Quick Action Cards (below notes grid) ────────────────── */
+.quick-actions {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.25rem;
+    margin-top: 2.5rem;
+}
+
+.quick-action-card {
+    background: var(--clr-primary);
+    border-radius: var(--radius-lg);
+    padding: 1.5rem;
+    text-align: center;
+    cursor: pointer;
+    transition: transform var(--transition), box-shadow var(--transition);
+    text-decoration: none;
+    display: block;
+}
+
+.quick-action-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 28px rgba(108, 99, 255, 0.32);
+    text-decoration: none;
+}
+
+.quick-action-icon {
+    font-size: 2.2rem;
+    margin-bottom: 0.75rem;
+}
+
+.quick-action-title {
+    font-family: var(--font-heading);
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--clr-white);
+    margin-bottom: 0.3rem;
+}
+
+.quick-action-desc {
+    font-size: 0.8rem;
+    color: rgba(255, 255, 255, 0.75);
+}
+
+/* ── Upload Prompt Banner ─────────────────────────────────── */
+.upload-prompt {
+    background: linear-gradient(135deg, var(--clr-primary-light) 0%, #e8e4ff 100%);
+    border: 1.5px dashed var(--clr-primary);
+    border-radius: var(--radius-lg);
+    padding: 2.5rem;
+    text-align: center;
+    margin-top: 1rem;
+}
+
+.upload-prompt-icon {
+    font-size: 3rem;
+    margin-bottom: 0.75rem;
+}
+
+.upload-prompt h3 {
+    font-size: 1.1rem;
+    color: var(--clr-primary-dark);
+    margin-bottom: 0.5rem;
+}
+
+.upload-prompt p {
+    font-size: 0.9rem;
+    color: var(--clr-text-muted);
+    margin-bottom: 1.5rem;
+}
+
+/* ── Note Card Delete Confirm ─────────────────────────────── */
+.note-delete-confirm {
+    background: var(--clr-danger-bg);
+    border: 1px solid var(--clr-danger-border);
+    border-radius: var(--radius-md);
+    padding: 0.75rem 1rem;
+    margin-top: 0.5rem;
+    font-size: 0.85rem;
+    color: #991b1b;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    animation: fadeIn 0.2s ease;
+}
+
+.note-delete-confirm button {
+    background: var(--clr-danger);
+    color: var(--clr-white);
+    border: none;
+    padding: 4px 12px;
+    border-radius: var(--radius-sm);
+    font-size: 0.8rem;
+    cursor: pointer;
+    font-family: var(--font-body);
+    font-weight: 500;
+    transition: opacity var(--transition);
+}
+
+.note-delete-confirm button:hover {
+    opacity: 0.88;
+}
+
+
+/* ── Note Card Meta — type/size on line 1, date on line 2 ── */
+.note-card-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    font-size: 0.8rem;
+    color: var(--clr-text-light);
+    margin-bottom: 0.75rem;
+}
+
+.note-card-meta span {
+    display: block;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-4px);
+    }
+
+    to {
+        opacity: 1;
+        transform: none;
+    }
+}
+
+/* ── Responsive ───────────────────────────────────────────── */
+@media (max-width: 768px) {
+    .quick-actions {
+        grid-template-columns: 1fr;
+    }
+
+    .dashboard-greeting {
+        flex-direction: column;
+        gap: 0.75rem;
+        text-align: center;
+    }
+
+    .stats-bar {
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+
+    .stat-pill {
+        min-width: calc(50% - 0.5rem);
+    }
+}
+
+@media (max-width: 480px) {
+    .stat-pill {
+        min-width: 100%;
+    }
+
+    .notes-toolbar {
+        flex-direction: column;
+    }
+
+    .search-input,
+    .sort-select {
+        min-width: 100%;
+    }
+}
+

@@ -1,0 +1,75 @@
+# =========================
+# ENV FILES
+# =========================
+.env
+*.env
+
+# =========================
+# PYTHON
+# =========================
+venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# =========================
+# NODE MODULES
+# =========================
+node_modules/
+
+# =========================
+# POPPLER
+# =========================
+poppler/
+
+# =========================
+# UPLOADS
+# =========================
+backend/notes/uploads/*
+!backend/notes/uploads/.gitkeep
+
+# =========================
+# LOGS / TEMP FILES
+# =========================
+*.log
+*.tmp
+*.txt
+
+# =========================
+# OS FILES
+# =========================
+.DS_Store
+Thumbs.db
+
+# =========================
+# VS CODE
+# =========================
+.vscode/
+
+# =========================
+# PACKAGE LOCK (optional)
+# Remove this line if working in team
+# =========================
+package-lock.json
+
+# =========================
+# TEST / DEBUG FILES
+# =========================
+debug_extract.py
+test_*.php
+test_*.txt
+quiz_debug.txt
+hash.php
+
+# =========================
+# GENERATED FILES
+# =========================
+*.pdf
+*.docx
+*.pptx
+
+# =========================
+# CACHE
+# =========================
+.cache/

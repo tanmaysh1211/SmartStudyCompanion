@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Report — Smart Study Companion</title>
+    <link rel="stylesheet" href="../css/style.css" />
+</head>
+
+<body>
+
+    <!-- Navbar -->
+    <div id="navbar-placeholder"></div>
+
+    <main class="main">
+
+        <!-- Page Header -->
+        <div class="page-header">
+            <h1 class="page-title">Learning Report</h1>
+            <p class="page-subtitle">Track your study progress and quiz performance over time.</p>
+        </div>
+
+        <!-- Stats Cards Row -->
+        <div class="report-grid">
+
+            <div class="stat-card card">
+                <div class="stat-icon" aria-hidden="true">📄</div>
+                <div class="stat-num" id="stat-notes">—</div>
+                <div class="stat-label">Notes Uploaded</div>
+            </div>
+
+            <div class="stat-card card">
+                <div class="stat-icon" aria-hidden="true">📝</div>
+                <div class="stat-num" id="stat-quizzes">—</div>
+                <div class="stat-label">Quizzes Taken</div>
+            </div>
+
+            <div class="stat-card card">
+                <div class="stat-icon" aria-hidden="true">🎯</div>
+                <div class="stat-num" id="stat-avg">—</div>
+                <div class="stat-label">Average Score</div>
+            </div>
+
+            <div class="stat-card card">
+                <div class="stat-icon" aria-hidden="true">🏆</div>
+                <div class="stat-num" id="stat-best">—</div>
+                <div class="stat-label">Best Score</div>
+            </div>
+
+        </div><!-- /report-grid -->
+
+        <!-- Quiz History Card -->
+        <div class="card history-card">
+            <div class="history-header">
+                <h2 class="card-title">📊 Quiz History</h2>
+                <div class="history-filter">
+                    <select class="input select-input select-sm" id="history-filter">
+                        <option value="all">All Results</option>
+                        <option value="good">Excellent (≥ 80%)</option>
+                        <option value="ok">Good (50–79%)</option>
+                        <option value="poor">Needs Work (&lt; 50%)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div id="quiz-history-list">
+                <!-- Skeleton loaders while fetching -->
+                <div class="history-item skeleton"></div>
+                <div class="history-item skeleton"></div>
+                <div class="history-item skeleton"></div>
+            </div>
+
+        </div><!-- /history-card -->
+
+        <!-- Progress Over Time (simple visual bar chart) -->
+        <div class="card chart-card">
+            <h2 class="card-title">📈 Score Trend</h2>
+            <p class="card-sub">Your last 10 quiz scores</p>
+            <div class="bar-chart" id="score-chart" aria-label="Quiz score trend chart">
+                <!-- Bars rendered by inline script below -->
+                <div class="chart-empty" id="chart-empty">Take a quiz to see your trend here.</div>
+            </div>
+        </div>
+
+        <!-- CTA Row -->
+        <div class="report-cta-row">
+            <a href="upload.html" class="btn-primary">📂 Upload More Notes</a>
+            <a href="dashboard.html" class="btn-secondary">← Back to Dashboard</a>
+        </div>
+
+    </main>
+
+    <script src="../js/auth.js"></script>
+    <script src="../js/upload.js"></script>
+    <script src="../js/summary.js"></script>
+    <script src="../js/quiz.js"></script>
+    <script src="../js/chat.js"></script>
+    <script src="../js/main.js"></script>
+
+    <script>
+        // Extended report page logic — filter history + render bar chart
+        let allResults = [];
+
+        async function loadReport() {
+            requireAuth();
+
+            try {
+                // const res = await fetch("../backend/quiz/get_results.php", {
+                //     headers: { Authorization: `Bearer ${getToken()}` },
+                // });
+                const res = await fetch(
+                    "http://localhost:8000/SmartStudyCompanion/backend/quiz/get_results.php",
+                    {
+                        headers: {
+                            Authorization: `Bearer ${getToken()}`
+                        }
+                    }
+                );
+                const data = await res.json();
+
+                if (!data.success) return;
+
+                allResults = data.results || [];
+
+                // Stats
+                const stats = data.stats || {};
+                const bestPct = allResults.length
+                    ? Math.max(...allResults.map((r) => r.percent ?? Math.round((r.score / r.total) * 100)))
+                    : 0;
+
+                document.getElementById("stat-notes").textContent = stats.notes_count ?? 0;
+                document.getElementById("stat-quizzes").textContent = stats.quizzes_taken ?? 0;
+                document.getElementById("stat-avg").textContent = `${stats.avg_score ?? 0}%`;
+                document.getElementById("stat-best").textContent = `${bestPct}%`;
+
+                renderHistory(allResults);
+                renderChart(allResults);
+
+            } catch (err) {
+                console.error("Failed to load report:", err);
+            }
+        }
+
+        function renderHistory(results) {
+            const container = document.getElementById("quiz-history-list");
+            if (!container) return;
+
+            if (!results || results.length === 0) {
+                container.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-icon">📭</div>
+            <p>No quizzes taken yet. <a href="dashboard.html">Go upload some notes →</a></p>
+          </div>`;
+                return;
+            }
+
+            container.innerHTML = results
+                .slice()
+                .reverse()
+                .map((r) => {
+                    const pct = r.percent ?? Math.round((r.score / r.total) * 100);
+                    const badge = pct >= 80 ? "badge-good" : pct >= 50 ? "badge-ok" : "badge-poor";
+                    const label = pct >= 80 ? "Excellent" : pct >= 50 ? "Good" : "Needs Work";
+                    return `
+            <div class="history-item" data-pct="${pct}">
+              <div class="history-score">${pct}%</div>
+              <div class="history-info">
+                <div class="history-note">${escapeHtml(r.note_name)}</div>
+                <div class="history-date">${r.date} · ${r.score}/${r.total} correct</div>
+              </div>
+              <span class="history-badge ${badge}">${label}</span>
+            </div>`;
+                })
+                .join("");
+        }
+
+        function renderChart(results) {
+            const chart = document.getElementById("score-chart");
+            const emptyEl = document.getElementById("chart-empty");
+            if (!chart) return;
+
+            const last10 = results.slice(-10);
+            if (last10.length === 0) { emptyEl.style.display = "block"; return; }
+            emptyEl.style.display = "none";
+
+            const bars = last10
+                .map((r, i) => {
+                    const pct = r.percent ?? Math.round((r.score / r.total) * 100);
+                    const color = pct >= 80 ? "var(--bar-good)" : pct >= 50 ? "var(--bar-ok)" : "var(--bar-poor)";
+                    return `
+            <div class="bar-col">
+              <div class="bar-pct-label">${pct}%</div>
+              <div class="bar" style="height:${pct}%; background:${color};" title="${r.note_name}: ${pct}%"></div>
+              <div class="bar-index">${i + 1}</div>
+            </div>`;
+                })
+                .join("");
+
+            chart.innerHTML = `
+        <div class="bar-chart-inner">${bars}</div>
+        <div class="bar-legend">
+          <span class="bar-legend-item good">■ Excellent</span>
+          <span class="bar-legend-item ok">■ Good</span>
+          <span class="bar-legend-item poor">■ Needs Work</span>
+        </div>`;
+        }
+
+        // Filter history list
+        document.getElementById("history-filter").addEventListener("change", function () {
+            const val = this.value;
+            let filtered = allResults;
+            if (val === "good") filtered = allResults.filter((r) => (r.percent ?? 0) >= 80);
+            if (val === "ok") filtered = allResults.filter((r) => {
+                const p = r.percent ?? 0;
+                return p >= 50 && p < 80;
+            });
+            if (val === "poor") filtered = allResults.filter((r) => (r.percent ?? 0) < 50);
+            renderHistory(filtered);
+        });
+
+        function escapeHtml(str) {
+            return String(str)
+                .replace(/&/g, "&amp;").replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+        }
+
+        loadReport();
+    </script>
+
+    <style>
+        /* Bar chart CSS variables and styles scoped to this page */
+        :root {
+            --bar-good: #22c55e;
+            --bar-ok: #f59e0b;
+            --bar-poor: #ef4444;
+        }
+
+        .bar-chart {
+            min-height: 180px;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .bar-chart-inner {
+            display: flex;
+            align-items: flex-end;
+            gap: 8px;
+            height: 160px;
+            padding: 0 4px;
+        }
+
+        .bar-col {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            height: 100%;
+            justify-content: flex-end;
+        }
+
+        .bar {
+            width: 100%;
+            border-radius: 6px 6px 0 0;
+            min-height: 4px;
+            transition: height 0.5s ease;
+        }
+
+        .bar-pct-label {
+            font-size: 11px;
+            color: var(--color-text-secondary, #888);
+            font-weight: 500;
+        }
+
+        .bar-index {
+            font-size: 11px;
+            color: var(--color-text-tertiary, #aaa);
+        }
+
+        .bar-legend {
+            display: flex;
+            gap: 1rem;
+            font-size: 12px;
+        }
+
+        .bar-legend-item {
+            color: var(--color-text-secondary, #666);
+        }
+
+        .bar-legend-item.good {
+            color: #22c55e;
+        }
+
+        .bar-legend-item.ok {
+            color: #f59e0b;
+        }
+
+        .bar-legend-item.poor {
+            color: #ef4444;
+        }
+
+        .chart-empty {
+            color: var(--color-text-secondary, #999);
+            font-size: 0.9rem;
+            text-align: center;
+            padding: 2rem 0;
+        }
+    </style>
+
+</body>
+
+</html>
