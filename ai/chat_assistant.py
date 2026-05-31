@@ -51,10 +51,6 @@ import textwrap
 import time
 
 
-# ════════════════════════════════════════════════════════════════
-# 1.  Output helpers
-# ════════════════════════════════════════════════════════════════
-
 def output_success(reply: str) -> None:
     """Print a success JSON response to stdout and exit 0."""
     print(json.dumps({"success": True, "reply": reply}, ensure_ascii=False))
@@ -67,12 +63,10 @@ def output_failure(message: str) -> None:
     sys.exit(1)
 
 
-# ════════════════════════════════════════════════════════════════
 # 2.  Constants
-# ════════════════════════════════════════════════════════════════
 
-MAX_CONTENT_CHARS = 80_000    # ~20k tokens
-MAX_HISTORY_TURNS = 10        # keep last 10 user+assistant pairs
+MAX_CONTENT_CHARS = 80_000    
+MAX_HISTORY_TURNS = 10        
 MIN_MESSAGE_CHARS = 1
 MAX_MESSAGE_CHARS = 2_000
 DEFAULT_MODEL     = "gpt-4o-mini"
@@ -80,9 +74,7 @@ MAX_RETRIES       = 3
 RETRY_DELAY_SEC   = 2.0
 
 
-# ════════════════════════════════════════════════════════════════
-# 3.  Input parsing & validation
-# ════════════════════════════════════════════════════════════════
+# 3. Input parsing & validation
 
 def _parse_history(raw: object) -> list[dict]:
     """
@@ -102,7 +94,6 @@ def _parse_history(raw: object) -> list[dict]:
         role    = str(item.get("role", "")).strip().lower()
         content = str(item.get("content", "")).strip()
 
-        # Accept both "model" (Gemini legacy) and "assistant" role names
         if role == "model":
             role = "assistant"
 
@@ -111,62 +102,8 @@ def _parse_history(raw: object) -> list[dict]:
 
         valid.append({"role": role, "content": content})
 
-    # Trim to MAX_HISTORY_TURNS conversation pairs
     max_msgs = MAX_HISTORY_TURNS * 2
     return valid[-max_msgs:] if len(valid) > max_msgs else valid
-
-
-# def parse_args() -> dict:
-#     """
-#     Parses and validates the single CLI JSON argument.
-#     Returns: { message, content, note_name, history }.
-#     Calls output_failure() and exits on any problem.
-#     """
-#     if len(sys.argv) < 2:
-#         output_failure(
-#             "Usage: python chat_assistant.py '<json_payload>'\n"
-#             "Required keys: message, content"
-#         )
-
-#     try:
-#         data = json.loads(sys.argv[1].strip())
-#     except json.JSONDecodeError as exc:
-#         output_failure(f"Invalid JSON argument: {exc}")
-
-#     if not isinstance(data, dict):
-#         output_failure("Argument must be a JSON object.")
-
-#     # ── message (required) ────────────────────────────────────
-#     message = str(data.get("message", "")).strip()
-#     if len(message) < MIN_MESSAGE_CHARS:
-#         output_failure("'message' is required and cannot be empty.")
-#     if len(message) > MAX_MESSAGE_CHARS:
-#         message = message[:MAX_MESSAGE_CHARS]
-
-#     # ── content (required) ────────────────────────────────────
-#     content = str(data.get("content", "")).strip()
-#     if len(content) < 20:
-#         output_failure("'content' (note text) is required and too short.")
-#     if len(content) > MAX_CONTENT_CHARS:
-#         content = content[:MAX_CONTENT_CHARS]
-
-#     # ── note_name (optional) ──────────────────────────────────
-#     note_name = str(data.get("note_name", "the uploaded notes")).strip()
-#     if not note_name:
-#         note_name = "the uploaded notes"
-
-#     # ── history (optional) ────────────────────────────────────
-#     history = _parse_history(data.get("history", []))
-
-#     return {
-#         "message":   message,
-#         "content":   content,
-#         "note_name": note_name,
-#         "history":   history,
-#     }
-
-
-
 
 
 def parse_args() -> dict:
@@ -185,26 +122,22 @@ def parse_args() -> dict:
     if not isinstance(data, dict):
         output_failure("Input must be a JSON object.")
 
-    # ── message (required) ────────────────────────────────────
     message = str(data.get("message", "")).strip()
     if len(message) < MIN_MESSAGE_CHARS:
         output_failure("'message' is required and cannot be empty.")
     if len(message) > MAX_MESSAGE_CHARS:
         message = message[:MAX_MESSAGE_CHARS]
 
-    # ── content (required) ────────────────────────────────────
     content = str(data.get("content", "")).strip()
     if len(content) < 20:
         output_failure("'content' (note text) is required and too short.")
     if len(content) > MAX_CONTENT_CHARS:
         content = content[:MAX_CONTENT_CHARS]
 
-    # ── note_name (optional) ──────────────────────────────────
     note_name = str(data.get("note_name", "the uploaded notes")).strip()
     if not note_name:
         note_name = "the uploaded notes"
 
-    # ── history (optional) ────────────────────────────────────
     history = _parse_history(data.get("history", []))
 
     return {
@@ -214,15 +147,8 @@ def parse_args() -> dict:
         "history":   history,
     }
 
-
-
-
-
-# ════════════════════════════════════════════════════════════════
 # 4.  Intent detection
-# ════════════════════════════════════════════════════════════════
 
-# Clearly off-topic patterns — things no study note would contain
 _OFF_TOPIC_RE = re.compile(
     r"\b("
     r"weather|forecast|temperature outside"
@@ -238,7 +164,6 @@ _OFF_TOPIC_RE = re.compile(
     re.IGNORECASE,
 )
 
-# Pure social greetings — no study question embedded
 _GREETING_RE = re.compile(
     r"^\s*(hi|hello|hey|good\s+(morning|afternoon|evening)|howdy)[!.,?\s]*$",
     re.IGNORECASE,
@@ -269,13 +194,10 @@ def augment_message(message: str, intent: str, note_name: str) -> str:
             f"[SYSTEM HINT: This question is outside the scope of "
             f'"{note_name}". Decline politely and redirect to the notes.]'
         )
-    # For 'greeting' and 'study' — pass through unchanged
     return message
 
 
-# ════════════════════════════════════════════════════════════════
 # 5.  System prompt builder
-# ════════════════════════════════════════════════════════════════
 
 def build_system_prompt(content: str, note_name: str) -> str:
     """
@@ -350,9 +272,7 @@ def build_system_prompt(content: str, note_name: str) -> str:
     """)
 
 
-# ════════════════════════════════════════════════════════════════
-# 6.  OpenAI API — multi-turn chat
-# ════════════════════════════════════════════════════════════════
+# 6. OpenAI API — multi-turn chat
 
 def call_openai_chat(
     system_prompt: str,
@@ -376,7 +296,7 @@ def call_openai_chat(
             "Run: pip install openai"
         )
 
-    # ── API key ───────────────────────────────────────────────
+    # API key
     api_key = os.getenv("OPENAI_API_KEY", "").strip()
     if not api_key:
         raise RuntimeError(
@@ -387,13 +307,10 @@ def call_openai_chat(
     client     = OpenAI(api_key=api_key)
     model_name = os.getenv("OPENAI_MODEL", DEFAULT_MODEL).strip()
 
-    # ── Build messages array ──────────────────────────────────
-    # OpenAI format: system → history turns → new user message
     messages: list[dict] = [{"role": "system", "content": system_prompt}]
     messages.extend(history)                                  # already {"role": "user"|"assistant", "content": "..."}
     messages.append({"role": "user", "content": new_message})
 
-    # ── Call API with retry ───────────────────────────────────
     last_error: Exception | None = None
 
     for attempt in range(1, MAX_RETRIES + 1):
@@ -413,7 +330,6 @@ def call_openai_chat(
             raise RuntimeError("OpenAI returned an empty chat response.")
 
         except AuthenticationError as exc:
-            # Non-retryable — bad API key
             raise RuntimeError(
                 f"OpenAI API key is invalid or lacks permission. "
                 f"Check OPENAI_API_KEY. Detail: {exc}"
@@ -428,7 +344,6 @@ def call_openai_chat(
             last_error = exc
             err_str    = str(exc).lower()
 
-            # Content policy violation — return graceful decline
             if "content_policy" in err_str or "content policy" in err_str:
                 return (
                     "I'm unable to respond to that. "
@@ -449,11 +364,8 @@ def call_openai_chat(
     )
 
 
-# ════════════════════════════════════════════════════════════════
-# 7.  Response post-processing
-# ════════════════════════════════════════════════════════════════
+# 7.Response post-processing
 
-# Common AI preamble phrases to strip
 _PREAMBLE_RE = re.compile(
     r"^("
     r"okay[,.]?|sure[,.]?|of course[,.]?|certainly[,.]?|"
@@ -464,7 +376,6 @@ _PREAMBLE_RE = re.compile(
     re.IGNORECASE,
 )
 
-# AI identity phrases to neutralise
 _IDENTITY_SUBS: list[tuple[re.Pattern, str]] = [
     (re.compile(
         r"\b(I\s+am|I'm)\s+(ChatGPT|OpenAI|an AI language model"
@@ -486,29 +397,19 @@ def post_process(reply: str) -> str:
     """
     reply = reply.strip()
 
-    # Strip preamble
     reply = _PREAMBLE_RE.sub("", reply).strip()
 
-    # Re-capitalise first character after stripping
     if reply:
         reply = reply[0].upper() + reply[1:]
 
-    # Neutralise identity phrases
     for pattern, replacement in _IDENTITY_SUBS:
         reply = pattern.sub(replacement, reply)
 
-    # Normalise excess blank lines
     reply = re.sub(r"\n{3,}", "\n\n", reply)
 
     return reply.strip()
 
-
-# ════════════════════════════════════════════════════════════════
-# 8.  Main
-# ════════════════════════════════════════════════════════════════
-
 def main() -> None:
-    # ── Parse & validate input ────────────────────────────────
     args = parse_args()
 
     message   = args["message"]
@@ -516,14 +417,12 @@ def main() -> None:
     note_name = args["note_name"]
     history   = args["history"]
 
-    # ── Pre-classify intent ───────────────────────────────────
     intent       = classify_intent(message)
     user_message = augment_message(message, intent, note_name)
 
-    # ── Build system prompt (contains the full note content) ──
     system_prompt = build_system_prompt(content, note_name)
 
-    # ── Call OpenAI ───────────────────────────────────────────
+    # Call OpenAI
     try:
         raw_reply = call_openai_chat(
             system_prompt=system_prompt,
@@ -533,7 +432,6 @@ def main() -> None:
     except RuntimeError as exc:
         output_failure(str(exc))
 
-    # ── Clean up the reply ────────────────────────────────────
     reply = post_process(raw_reply)
 
     if not reply:
