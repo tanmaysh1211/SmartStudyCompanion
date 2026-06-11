@@ -32,7 +32,7 @@ Built as a **Web Technologies** academic project, it demonstrates real-world int
 
 ---
 
-## 🖼️ Screenshots
+<!-- ## 🖼️ Screenshots
 
 | Page | Description |
 |---|---|
@@ -42,8 +42,73 @@ Built as a **Web Technologies** academic project, it demonstrates real-world int
 | **Summary** | AI-generated markdown summary with copy/download |
 | **Quiz** | Timed MCQ quiz with score result |
 | **Chat** | Context-aware AI chat scoped to your note |
-| **Report** | Quiz history, stats, and score trend bar chart |
+| **Report** | Quiz history, stats, and score trend bar chart | -->
 
+
+
+## 🖼️ Screenshots
+
+### 🔐 Login & Registration
+
+<p align="center">
+  <img src="screenshots/login.png" width="900">
+</p>
+
+The authentication page provides secure login and registration with a clean modern interface.
+
+---
+
+### 🏠 Dashboard
+
+<p align="center">
+  <img src="screenshots/dashboard.png" width="900">
+</p>
+
+The dashboard serves as the central hub where students can access uploaded notes, quizzes, reports, and AI-powered study tools.
+
+---
+
+### 📖 AI Summary Generation
+
+<p align="center">
+  <img src="screenshots/summary.png" width="900">
+</p>
+
+Generate structured summaries from uploaded notes, helping students quickly revise important concepts.
+
+---
+
+### 🚀 Study Tools
+
+<p align="center">
+  <img src="screenshots/features.png" width="900">
+</p>
+
+Access three AI-powered learning tools:
+
+- 🧠 Generate Summary
+- 📝 Generate Quiz
+- 💬 Ask AI
+
+---
+
+### 📝 AI Quiz Generator
+
+<p align="center">
+  <img src="screenshots/quiz.png" width="900">
+</p>
+
+Create quizzes automatically from uploaded content and test understanding with configurable question counts and timing.
+
+---
+
+### 💬 AI Chat Assistant
+
+<p align="center">
+  <img src="screenshots/chat.png" width="900">
+</p>
+
+Ask questions about uploaded notes and receive context-aware answers generated exclusively from your study material.
 ---
 
 ## 🛠️ Tech Stack
