@@ -1,44 +1,8 @@
 #!/usr/bin/env python
 """
 ai/chat_assistant.py
-═══════════════════════════════════════════════════════════════
 Context-aware AI chat assistant that answers student questions
 ONLY from their uploaded note content using the OpenAI API.
-
-Called by backend/ai/chat_assistant.php via shell_exec():
-    python3 ai/chat_assistant.py '<json_payload>'
-
-Input  — single CLI argument: JSON string
-    {
-        "message"   : "What is the Banker's Algorithm?",  (required)
-        "content"   : "<full note text>",                 (required)
-        "note_name" : "Operating System Notes",           (optional)
-        "history"   : [                                   (optional)
-            { "role": "user",      "content": "..." },
-            { "role": "assistant", "content": "..." }
-        ]
-    }
-
-Output (stdout) — always valid JSON:
-    Success → { "success": true,  "reply": "..." }
-    Failure → { "success": false, "message": "..." }
-
-Behaviour:
-    • Answers ONLY from the uploaded note content.
-    • Politely declines off-topic questions.
-    • Maintains multi-turn conversation context via history[].
-    • Handles: explain, define, summarise, example, compare,
-      list, quiz-me, and other common student intents.
-    • Masks AI identity (never reveals it is ChatGPT / OpenAI).
-    • Strips common preamble phrases from the response.
-
-Environment variables:
-    OPENAI_API_KEY   Your OpenAI API key (required)
-    OPENAI_MODEL     Model name (default: gpt-4o-mini)
-
-Install dependencies:
-    pip install openai
-═══════════════════════════════════════════════════════════════
 """
 
 from __future__ import annotations
