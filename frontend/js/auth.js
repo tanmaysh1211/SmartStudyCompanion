@@ -61,7 +61,7 @@ function getUser() {
 function isLoggedIn() {
   const token = getToken();
 
-  console.log("TOKEN:", token);
+  // console.log("TOKEN:", token);
 
   if (!token || token === "undefined" || token === "null") {
     return false;
@@ -76,7 +76,7 @@ function isLoggedIn() {
 
     const payload = JSON.parse(atob(parts[1]));
 
-    console.log("PAYLOAD:", payload);
+    // console.log("PAYLOAD:", payload);
 
     const now = Math.floor(Date.now() / 1000);
 
@@ -131,14 +131,14 @@ async function login(email, password) {
       body: JSON.stringify({ email, password }),
     });
 
-    console.log("Response status:", res.status);
+    // console.log("Response status:", res.status);
     const data = await res.json();
-    console.log("Response data:", data);
+    // console.log("Response data:", data);
 
     if (data.success) {
       saveToken(data.token);
       saveUser(data.user);
-      console.log("Saved Token:", localStorage.getItem(TOKEN_KEY));
+      // console.log("Saved Token:", localStorage.getItem(TOKEN_KEY));
       return { success: true, message: "Login successful." };
     } else {
       return { success: false, message: data.message || "Invalid credentials." };

@@ -86,7 +86,7 @@ async function generateQuiz(noteId, count = 10) {
 
         const rawText = await response.text();
 
-        console.log("RAW RESPONSE =", rawText);
+        // console.log("RAW RESPONSE =", rawText);
 
         let data;
 
@@ -96,7 +96,7 @@ async function generateQuiz(noteId, count = 10) {
             throw new Error("Backend did not return valid JSON");
         }
 
-        console.log("PARSED DATA =", data);
+        // console.log("PARSED DATA =", data);
 
         if (!response.ok || !data.success) {
             throw new Error(data.message || "Quiz generation failed");

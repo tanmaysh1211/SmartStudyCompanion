@@ -229,7 +229,7 @@ async function callChatAPI(userMessage) {
 
     // const data = await res.json();
     const raw = await res.text();
-    console.log(raw);
+    // console.log(raw);
 
     const data = JSON.parse(raw);
 
