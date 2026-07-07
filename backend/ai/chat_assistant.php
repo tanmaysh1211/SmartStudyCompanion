@@ -175,7 +175,8 @@ $payload = json_encode([
 ], JSON_UNESCAPED_UNICODE);
 
 // $pythonBin  = escapeshellcmd(getenv('PYTHON_BIN') ?: 'C:\\xampp\\htdocs\\SmartStudyCompanion\\venv\\Scripts\\python.exe');
-$pythonBin = 'C:\\xampp\\htdocs\\SmartStudyCompanion\\venv\\Scripts\\python.exe';
+// $pythonBin = 'C:\\xampp\\htdocs\\SmartStudyCompanion\\venv\\Scripts\\python.exe';
+$pythonBin = getenv('PYTHON_BIN') ?: 'python3';
 error_log('[chat] Using python: ' . $pythonBin);
 $scriptPath = realpath(__DIR__ . '/../../ai/chat_assistant.py');
 

@@ -497,7 +497,20 @@ def _extract_pdfplumber_html(path: str) -> tuple[str, int]:
     import base64
 
     # ── Change this to your actual poppler bin path ──
-    POPPLER_PATH = r"C:\xampp\htdocs\SmartStudyCompanion\poppler\Library\bin"
+    # POPPLER_PATH = r"C:\xampp\htdocs\SmartStudyCompanion\poppler\Library\bin"
+    import platform
+    import os
+
+    if platform.system() == "Windows":
+        POPPLER_PATH = os.path.join(
+            os.path.dirname(__file__),
+            "..",
+            "poppler",
+            "Library",
+            "bin"
+        )
+    else:
+        POPPLER_PATH = None
 
     pages = convert_from_path(
         path,

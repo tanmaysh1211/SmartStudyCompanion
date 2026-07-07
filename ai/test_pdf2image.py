@@ -40,10 +40,25 @@ except ImportError:
     sys.exit(1)
 
 # ── 3. Check Poppler ──────────────────────────────────────────
-POPPLER_PATH = r"C:\xampp\htdocs\SmartStudyCompanion\poppler\Library\bin"
+# POPPLER_PATH = r"C:\xampp\htdocs\SmartStudyCompanion\poppler\Library\bin"
+import platform
+import os
 
+if platform.system() == "Windows":
+    POPPLER_PATH = os.path.join(
+        os.path.dirname(__file__),
+        "..",
+        "poppler",
+        "Library",
+        "bin"
+    )
+else:
+    POPPLER_PATH = None
+
+# print(f"\n[3] Checking Poppler at: {POPPLER_PATH}")
+# if os.path.isdir(POPPLER_PATH):
 print(f"\n[3] Checking Poppler at: {POPPLER_PATH}")
-if os.path.isdir(POPPLER_PATH):
+if POPPLER_PATH and os.path.isdir(POPPLER_PATH):
     print(f"    ✓ Directory exists")
     # List pdftoppm.exe / pdfinfo.exe
     expected = ["pdftoppm.exe", "pdfinfo.exe"]
@@ -56,15 +71,29 @@ if os.path.isdir(POPPLER_PATH):
             print(f"      FIX: Download Poppler for Windows from:")
             print(f"           https://github.com/oschwartz10612/poppler-windows/releases")
             print(f"           Extract and put the bin/ contents in: {POPPLER_PATH}")
+# else:
+#     print(f"    ✗ Directory does NOT exist: {POPPLER_PATH}")
+#     print(f"    FIX:")
+#     print(f"      1. Download Poppler for Windows:")
+#     print(f"         https://github.com/oschwartz10612/poppler-windows/releases")
+#     print(f"      2. Extract the zip")
+#     print(f"      3. Copy the 'Library/bin' folder contents to:")
+#     print(f"         {POPPLER_PATH}")
+#     print(f"      OR update POPPLER_PATH in extract_pdf.py to the correct location")
+
+
 else:
-    print(f"    ✗ Directory does NOT exist: {POPPLER_PATH}")
-    print(f"    FIX:")
-    print(f"      1. Download Poppler for Windows:")
-    print(f"         https://github.com/oschwartz10612/poppler-windows/releases")
-    print(f"      2. Extract the zip")
-    print(f"      3. Copy the 'Library/bin' folder contents to:")
-    print(f"         {POPPLER_PATH}")
-    print(f"      OR update POPPLER_PATH in extract_pdf.py to the correct location")
+    if POPPLER_PATH is None:
+        print("    ✓ Linux detected. Using system-installed Poppler.")
+    else:
+        print(f"    ✗ Directory does NOT exist: {POPPLER_PATH}")
+        print("    FIX:")
+        print("      1. Download Poppler for Windows:")
+        print("         https://github.com/oschwartz10612/poppler-windows/releases")
+        print("      2. Extract the zip")
+        print("      3. Copy the 'Library/bin' folder contents to:")
+        print(f"         {POPPLER_PATH}")
+        print("      OR update POPPLER_PATH in extract_pdf.py to the correct location")
 
 # ── 4. Quick conversion test ──────────────────────────────────
 pdf_path = sys.argv[1] if len(sys.argv) > 1 else None

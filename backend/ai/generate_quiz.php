@@ -145,7 +145,8 @@ $payload = json_encode([
 
 set_time_limit(180);
 
-$pythonBin  = 'C:\\xampp\\htdocs\\SmartStudyCompanion\\venv\\Scripts\\python.exe';
+// $pythonBin  = 'C:\\xampp\\htdocs\\SmartStudyCompanion\\venv\\Scripts\\python.exe';
+$pythonBin = getenv('PYTHON_BIN') ?: 'python3';
 $scriptPath = realpath(__DIR__ . '/../../ai/generate_quiz.py');
 $apiKey     = getenv('OPENAI_API_KEY') ?: '';
 $model      = getenv('OPENAI_MODEL')   ?: 'gpt-4o-mini';

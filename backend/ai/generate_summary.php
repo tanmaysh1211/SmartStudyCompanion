@@ -103,7 +103,8 @@ $model  = getenv('OPENAI_MODEL')
        ?: ($_SERVER['OPENAI_MODEL'] ?? 'gpt-4o-mini');
 
 // Hardcoded venv Python path — Apache doesn't inherit shell env
-$pythonBin  = 'C:\\xampp\\htdocs\\SmartStudyCompanion\\venv\\Scripts\\python.exe';
+// $pythonBin  = 'C:\\xampp\\htdocs\\SmartStudyCompanion\\venv\\Scripts\\python.exe';
+$pythonBin = getenv('PYTHON_BIN') ?: 'python3';
 $scriptPath = realpath(__DIR__ . '/../../ai/generate_summary.py');
 
 if (!$apiKey) {

@@ -35,7 +35,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 define('MAX_FILE_SIZE_BYTES', (int)(getenv('MAX_FILE_SIZE_MB') ?: 20) * 1024 * 1024);
 define('ALLOWED_EXTENSIONS',  ['pdf', 'txt', 'md']);
 define('UPLOAD_BASE_DIR',     rtrim(getenv('UPLOAD_DIR') ?: __DIR__ . '/../../uploads', '/\\'));
-define('PYTHON_BIN',          getenv('PYTHON_BIN') ?: 'C:\\xampp\\htdocs\\SmartStudyCompanion\\venv\\Scripts\\python.exe');
+define('PYTHON_BIN',          getenv('PYTHON_BIN') ?: 'python3');
 
 $extractScript = realpath(__DIR__ . '/../../ai/extract_pdf.py');
 if ($extractScript === false) {
