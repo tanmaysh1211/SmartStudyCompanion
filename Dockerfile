@@ -1,6 +1,5 @@
 FROM php:8.2-apache
 
-# Install Python
 RUN apt-get update && apt-get install -y \
     python3 \
     python3-pip \
@@ -11,16 +10,18 @@ RUN apt-get update && apt-get install -y \
     git \
     && docker-php-ext-install pdo pdo_mysql
 
-# Copy project
 COPY . /var/www/html/
 
 WORKDIR /var/www/html
 
-# Install Python dependencies
+RUN mkdir -p /var/www/html/uploads \
+    && chown -R www-data:www-data /var/www/html/uploads \
+    && chmod -R 755 /var/www/html/uploads
+    
 RUN pip3 install --break-system-packages -r ai/requirements.txt
 
-# Enable Apache rewrite
 RUN a2enmod rewrite
 
-# Expose port
 EXPOSE 80
+
+CMD ["apache2-foreground"]

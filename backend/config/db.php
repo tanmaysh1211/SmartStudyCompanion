@@ -91,7 +91,7 @@ if (isset($pdo)) {
 // 2.  Read connection parameters
 // ════════════════════════════════════════════════════════════════
 $dbHost     = (string)(getenv('DB_HOST')     ?: 'localhost');
-$dbPort     = (string)(getenv('DB_PORT')     ?: '3307');
+$dbPort     = (string)(getenv('DB_PORT')     ?: '3306');
 $dbName     = (string)(getenv('DB_NAME')     ?: 'smart_study_companion');
 $dbUser     = (string)(getenv('DB_USER')     ?: 'root');
 $dbPassword = (string)(getenv('DB_PASSWORD') ?: '');
