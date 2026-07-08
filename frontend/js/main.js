@@ -448,7 +448,6 @@ async function initViewNotePage() {
   const noteId = params.get("id");
 
   if (!noteId) {
-    // window.location.href = "http://localhost:8000/SmartStudyCompanion/frontend/pages/dashboard.html";
     window.location.href = "dashboard.html";
     return;
   }
@@ -456,7 +455,6 @@ async function initViewNotePage() {
   const note = await fetchNoteById(noteId);
   if (!note) {
     alert("Note not found.");
-    // window.location.href = "http://localhost:8000/SmartStudyCompanion/frontend/pages/dashboard.html";
     window.location.href = "dashboard.html";
     return;
   }

@@ -97,8 +97,6 @@ function isLoggedIn() {
  */
 function requireAuth() {
   if (!isLoggedIn()) {
-    // window.location.href = "../frontend/pages/login.html";
-      //  window.location.href = "http://localhost:8000/SmartStudyCompanion/frontend/pages/login.html";
           window.location.href = "login.html";
   }
 }
@@ -110,7 +108,6 @@ function requireAuth() {
 function redirectIfLoggedIn() {
   if (isLoggedIn()) {
     // window.location.href = "dashboard.html";
-    // window.location.href = "http://localhost:8000/SmartStudyCompanion/frontend/pages/dashboard.html";
         window.location.href = "dashboard.html";
   }
 }
@@ -198,8 +195,6 @@ async function logout() {
     // Even if the request fails, clear local state
   } finally {
     removeToken();
-    // window.location.href = "../frontend/pages/login.html";
-      //  window.location.href = "http://localhost:8000/SmartStudyCompanion/frontend/pages/login.html";
           window.location.href = "login.html";
   }
 }
@@ -240,7 +235,6 @@ function bindLoginForm() {
 
     if (result.success) {
       // window.location.href = "dashboard.html";
-        //  window.location.href = "http://localhost:8000/SmartStudyCompanion/frontend/pages/dashboard.html";
         window.location.href = "dashboard.html";
     } else {
       errorEl.textContent = result.message;
@@ -298,7 +292,6 @@ function bindSignupForm() {
 
     if (result.success) {
       // window.location.href = "dashboard.html";
-      // window.location.href = "http://localhost:8000/SmartStudyCompanion/frontend/pages/dashboard.html";
       window.location.href = "dashboard.html";
     } else {
       errorEl.textContent = result.message;
