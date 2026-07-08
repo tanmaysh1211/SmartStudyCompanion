@@ -8,7 +8,7 @@
 // const NOTES_API = "http://localhost:8000/SmartStudyCompanion/backend/notes";
 
 // const NOTES_API = "http://localhost:8000/backend/notes";
-const NOTES_API = "http://localhost:8000/SmartStudyCompanion/backend/notes";
+const NOTES_API = "https://smartstudy-backend-oekm.onrender.com/backend/notes";
 
 // ─── State ────────────────────────────────────────────────────────────────────
 

@@ -3,7 +3,7 @@
  * Handles AI-generated summaries of uploaded notes.
  */
 
-const SUMMARY_API = "http://localhost:8000/SmartStudyCompanion/backend/ai/generate_summary.php";
+const SUMMARY_API = "https://smartstudy-backend-oekm.onrender.com/backend/ai/generate_summary.php";
 
 // ─── State ────────────────────────────────────────────────────────────────────
 

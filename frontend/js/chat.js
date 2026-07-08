@@ -7,7 +7,7 @@
  */
 
 // const CHAT_AI_API = "../backend/ai/chat_assistant.php";
-const CHAT_AI_API = "http://localhost:8000/SmartStudyCompanion/backend/ai/chat_assistant.php";
+const CHAT_AI_API = "https://smartstudy-backend-oekm.onrender.com/backend/ai/chat_assistant.php";
 
 // const CHAT_AI_API = "http://localhost:8000/backend/ai/chat_assistant.php";
 

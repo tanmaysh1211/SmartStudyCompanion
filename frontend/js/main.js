@@ -601,7 +601,7 @@ async function handleNoteDelete(noteId, noteName, cardElement, gridElement) {
   let data;
   try {
     data = await safeFetchJson(
-      "http://localhost:8000/SmartStudyCompanion/backend/notes/delete_note.php",
+      "https://smartstudy-backend-oekm.onrender.com/backend/notes/delete_note.php",
       {
         method: "DELETE",
         headers: {
@@ -714,7 +714,7 @@ async function initReportPage() {
   requireAuth();
   try {
     const data = await safeFetchJson(
-      "http://localhost:8000/SmartStudyCompanion/backend/quiz/get_results.php",
+      "https://smartstudy-backend-oekm.onrender.com/backend/quiz/get_results.php",
       { headers: { Authorization: `Bearer ${getToken()}` } }
     );
     if (data.success) {
@@ -825,14 +825,16 @@ async function initViewNotePage() {
   const noteId = params.get("id");
 
   if (!noteId) {
-    window.location.href = "http://localhost:8000/SmartStudyCompanion/frontend/pages/dashboard.html";
+    // window.location.href = "http://localhost:8000/SmartStudyCompanion/frontend/pages/dashboard.html";
+    window.location.href = "../pages/dashboard.html";
     return;
   }
 
   const note = await fetchNoteById(noteId);
   if (!note) {
     alert("Note not found.");
-    window.location.href = "http://localhost:8000/SmartStudyCompanion/frontend/pages/dashboard.html";
+    // window.location.href = "http://localhost:8000/SmartStudyCompanion/frontend/pages/dashboard.html";
+    window.location.href = "../pages/dashboard.html";
     return;
   }
 

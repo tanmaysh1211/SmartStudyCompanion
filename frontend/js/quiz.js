@@ -7,8 +7,8 @@
 // const QUIZ_API = "../backend/quiz";
 // const AI_API   = "../backend/ai";
 
-const QUIZ_API = "http://localhost:8000/SmartStudyCompanion/backend/quiz";
-const AI_API   = "http://localhost:8000/SmartStudyCompanion/backend/ai";
+const QUIZ_API = "https://smartstudy-backend-oekm.onrender.com/backend/quiz";
+const AI_API   = "https://smartstudy-backend-oekm.onrender.com/backend/ai";
 
 
 // const QUIZ_API = "http://localhost:8000/backend/quiz";
@@ -69,7 +69,7 @@ async function generateQuiz(noteId, count = 10) {
   // } 
     try {
         const response = await fetch(
-            "http://localhost:8000/SmartStudyCompanion/backend/ai/generate_quiz.php",
+            "https://smartstudy-backend-oekm.onrender.com/backend/ai/generate_quiz.php",
             {
                 method: "POST",
                 headers: {

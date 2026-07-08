@@ -5,7 +5,7 @@
  */
 
 // const AUTH_API = "../backend/auth";
-const AUTH_API = "http://localhost:8000/SmartStudyCompanion/backend/auth";
+const AUTH_API = "https://smartstudy-backend-oekm.onrender.com/backend/auth";
 // const AUTH_API = "http://localhost:8000/backend/auth";
 
 const TOKEN_KEY = "ssc_token";
@@ -98,7 +98,8 @@ function isLoggedIn() {
 function requireAuth() {
   if (!isLoggedIn()) {
     // window.location.href = "../frontend/pages/login.html";
-       window.location.href = "http://localhost:8000/SmartStudyCompanion/frontend/pages/login.html";
+      //  window.location.href = "http://localhost:8000/SmartStudyCompanion/frontend/pages/login.html";
+          window.location.href = "../pages/login.html";
   }
 }
 
@@ -109,7 +110,8 @@ function requireAuth() {
 function redirectIfLoggedIn() {
   if (isLoggedIn()) {
     // window.location.href = "dashboard.html";
-    window.location.href = "http://localhost:8000/SmartStudyCompanion/frontend/pages/dashboard.html";
+    // window.location.href = "http://localhost:8000/SmartStudyCompanion/frontend/pages/dashboard.html";
+        window.location.href = "../pages/dashboard.html";
   }
 }
 
@@ -197,7 +199,8 @@ async function logout() {
   } finally {
     removeToken();
     // window.location.href = "../frontend/pages/login.html";
-       window.location.href = "http://localhost:8000/SmartStudyCompanion/frontend/pages/login.html";
+      //  window.location.href = "http://localhost:8000/SmartStudyCompanion/frontend/pages/login.html";
+          window.location.href = "../pages/login.html";
   }
 }
 
@@ -237,7 +240,8 @@ function bindLoginForm() {
 
     if (result.success) {
       // window.location.href = "dashboard.html";
-         window.location.href = "http://localhost:8000/SmartStudyCompanion/frontend/pages/dashboard.html";
+        //  window.location.href = "http://localhost:8000/SmartStudyCompanion/frontend/pages/dashboard.html";
+        window.location.href = "../pages/dashboard.html";
     } else {
       errorEl.textContent = result.message;
       btn.disabled = false;
@@ -294,7 +298,8 @@ function bindSignupForm() {
 
     if (result.success) {
       // window.location.href = "dashboard.html";
-      window.location.href = "http://localhost:8000/SmartStudyCompanion/frontend/pages/dashboard.html";
+      // window.location.href = "http://localhost:8000/SmartStudyCompanion/frontend/pages/dashboard.html";
+      window.location.href = "../pages/dashboard.html";
     } else {
       errorEl.textContent = result.message;
       btn.disabled = false;
