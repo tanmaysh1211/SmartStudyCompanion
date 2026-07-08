@@ -1,34 +1,4 @@
-# ════════════════════════════════════════════════════════════════
-# ai/requirements.txt  —  Smart Study Companion
-# Python dependencies for all AI scripts.
-#
-# Recommended Python version: 3.10 or higher
-#
-# ── Quick install ────────────────────────────────────────────────
-# Install all dependencies (production):
-#   pip install -r ai/requirements.txt
-#
-# Install in a virtual environment (recommended):
-#   python3 -m venv .venv
-#   source .venv/bin/activate          # Windows: .venv\Scripts\activate
-#   pip install -r ai/requirements.txt
-#
-# Verify installation:
-#   python3 ai/gemini_client.py        # runs the self-test
-#
-# ── Upgrade all packages ─────────────────────────────────────────
-#   pip install --upgrade -r ai/requirements.txt
-#
-# ── Freeze current versions after install ────────────────────────
-#   pip freeze > ai/requirements.lock
-# ════════════════════════════════════════════════════════════════
-
-
-# ────────────────────────────────────────────────────────────────
-# CORE — Google Gemini AI (required by all AI scripts)
-# ────────────────────────────────────────────────────────────────
-# Used by: gemini_client.py, generate_summary.py,
-#          generate_quiz.py, chat_assistant.py
+openai>=1.40.0
 google-generativeai>=0.7.0
 pdfplumber>=0.11.0
 pypdf>=4.0.0
