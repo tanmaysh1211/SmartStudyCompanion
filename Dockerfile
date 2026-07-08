@@ -14,10 +14,13 @@ COPY . /var/www/html/
 
 WORKDIR /var/www/html
 
+RUN ls -la
+RUN ls -la ai
+
 RUN mkdir -p /var/www/html/uploads \
     && chown -R www-data:www-data /var/www/html/uploads \
     && chmod -R 755 /var/www/html/uploads
-    
+
 RUN pip3 install --break-system-packages -r ai/requirements.txt
 
 RUN a2enmod rewrite
