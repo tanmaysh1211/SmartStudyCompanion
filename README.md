@@ -573,22 +573,7 @@ frontend renders markdown summary
 - The PDF may be image-only (scanned) — no embedded text
 - Try uploading a text-based PDF or paste the content directly
 
----
 
-## 👥 Team
-
-| Name | Role |
-|---|---|
-| *(your name)* | Full Stack Development |
-| *(teammate)* | Frontend + UI Design |
-| *(teammate)* | Backend + Database |
-| *(teammate)* | AI Integration + Testing |
-
-**Institution:** *(Your College Name)*
-**Course:** Web Technologies
-**Year:** 2025–26
-
----
 
 ## 📄 License
 
