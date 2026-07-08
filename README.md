@@ -147,7 +147,7 @@ Ask questions about uploaded notes and receive context-aware answers generated e
 SmartStudyCompanion/
 │
 ├── ai/                          # Python AI scripts
-│   ├── gemini_client.py         # Shared AI client (OpenAI or Ollama)
+│   ├── openai_client.py         # Shared AI client (OpenAI or Ollama)
 │   ├── generate_summary.py      # Summary generation
 │   ├── generate_quiz.py         # Quiz question generation
 │   ├── chat_assistant.py        # Context-aware chat
@@ -182,30 +182,42 @@ SmartStudyCompanion/
 │   ├── schema.sql               # Full database schema (run first)
 │   └── seed.sql                 # Demo data (optional)
 │
-├── frontend/
+frontend/
+│
+├── assets/
 │   ├── css/
-│   │   ├── style.css            # Global styles + variables
-│   │   ├── login.css
+│   │   ├── style.css
 │   │   ├── dashboard.css
+│   │   ├── login.css
 │   │   ├── quiz.css
+│   │   ├── report.css
+│   │   ├── summary.css
+│   │   ├── upload.css
+│   │   ├── view-note.css
 │   │   └── chat.css
+│   │
 │   ├── js/
-│   │   ├── auth.js              # JWT login/signup/logout
-│   │   ├── upload.js            # File upload + notes list
-│   │   ├── summary.js           # Summary generation + rendering
-│   │   ├── quiz.js              # Quiz flow + timer + scoring
-│   │   ├── chat.js              # AI chat + message rendering
-│   │   └── main.js              # Router + page initialisation
-│   └── pages/
-│       ├── login.html
-│       ├── index.html
-│       ├── dashboard.html
-│       ├── upload.html
-│       ├── view-note.html
-│       ├── summary.html
-│       ├── quiz.html
-│       ├── chat.html
-│       └── report.html
+│      ├── auth.js
+│      ├── dashboard.js
+│      ├── upload.js
+│      ├── summary.js
+│      ├── quiz.js
+│      ├── chat.js
+│      ├── report.js
+│      ├── note-view.js
+│      ├── api.js
+│      └── utils.js
+│      
+│── index.html
+│── login.html
+│── signup.html
+│── dashboard.html
+│── upload.html
+│── summary.html
+│── quiz.html
+│── report.html
+│── chat.html
+│── view-note.html
 │
 ├── uploads/                     # Uploaded files (auto-created)
 ├── .env                         # Your config (never commit this)
