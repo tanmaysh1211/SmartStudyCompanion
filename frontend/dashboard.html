@@ -11,10 +11,8 @@
 
 <body>
 
-    <!-- Navbar -->
     <div id="navbar-placeholder"></div>
 
-    <!-- Hero Banner -->
     <section class="hero">
         <div class="hero-text">
             <h1 class="hero-title">Empower Your Learning<br>Journey</h1>
@@ -31,10 +29,7 @@
         <div class="hero-visual" aria-hidden="true">📱</div>
     </section>
 
-    <!-- Main Content -->
     <main class="main">
-
-        <!-- Stats Bar -->
         <div class="stats-bar" id="stats-bar">
             <div class="stat-pill">
                 <span class="stat-pill-num" id="stat-total-notes">—</span>
@@ -50,13 +45,11 @@
             </div>
         </div>
 
-        <!-- My Notes Section -->
         <div class="section-header">
             <h2 class="section-title">My Notes</h2>
             <a href="upload.html" class="btn-primary btn-sm">+ Upload New Note</a>
         </div>
 
-        <!-- Search / Filter -->
         <div class="notes-toolbar">
             <input class="input search-input" type="text" id="notes-search" placeholder="🔍 Search notes by name…" />
             <select class="input select-input" id="notes-sort">
@@ -66,15 +59,13 @@
             </select>
         </div>
 
-        <!-- Notes Grid -->
         <div class="notes-grid" id="notes-grid">
-            <!-- Skeleton loaders while fetching -->
             <div class="note-card skeleton"></div>
             <div class="note-card skeleton"></div>
             <div class="note-card skeleton"></div>
         </div>
 
-    </main><!-- /main -->
+    </main>
 
     <script src="js/auth.js"></script>
     <script src="js/upload.js"></script>
@@ -84,18 +75,13 @@
     <script src="js/main.js"></script>
 
     <script>
-        // Client-side search + sort applied after notes load
         let allNotes = [];
 
         async function loadDashboard() {
             requireAuth();
             renderUserInfo();
 
-            // Load stats
             try {
-                // const res = await fetch("../backend/quiz/get_results.php", {
-                //     headers: { Authorization: `Bearer ${getToken()}` },
-                // });
                 const res = await fetch(
                     "https://smartstudy-backend-oekm.onrender.com/backend/quiz/get_results.php",
                     {
@@ -109,9 +95,8 @@
                     document.getElementById("stat-total-quizzes").textContent = data.stats.quizzes_taken ?? 0;
                     document.getElementById("stat-avg-score").textContent = `${data.stats.avg_score ?? 0}%`;
                 }
-            } catch { /* non-fatal */ }
+            } catch 
 
-            // Load notes
             allNotes = await fetchNotes();
             document.getElementById("stat-total-notes").textContent = allNotes.length;
             applyFilters();
