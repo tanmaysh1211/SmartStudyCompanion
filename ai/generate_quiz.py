@@ -145,7 +145,7 @@ RETRY_DELAY_SEC = 2.0
 
 def call_openai(prompt: str, system_prompt: str):
     try:
-        from openai import OpenAI, AuthenticationError, RateLimitError, APIError  # type: ignore
+        from openai import OpenAI, AuthenticationError, RateLimitError, APIError  
     except ImportError:
         raise RuntimeError(
             "openai is not installed. "
@@ -182,7 +182,6 @@ def call_openai(prompt: str, system_prompt: str):
             raise RuntimeError("OpenAI returned an empty response.")
 
         except AuthenticationError as exc:
-            # Non-retryable — bad API key
             raise RuntimeError(f"Invalid OpenAI API key: {exc}") from exc
 
         except RateLimitError as exc:
@@ -203,7 +202,7 @@ def call_openai(prompt: str, system_prompt: str):
             if attempt < MAX_RETRIES:
                 time.sleep(RETRY_DELAY_SEC * (2 ** (attempt - 1)))
 
-        except Exception as exc:  # noqa: BLE001
+        except Exception as exc: 
             last_error = exc
             if attempt < MAX_RETRIES:
                 time.sleep(RETRY_DELAY_SEC * (2 ** (attempt - 1)))
@@ -219,7 +218,7 @@ def extract_json_array(raw: str):
 
     start = raw.find("[")
     if start == -1:
-        return raw  # let the caller handle the parse error
+        return raw  
 
     depth = 0
     for i, ch in enumerate(raw[start:], start=start):
@@ -326,7 +325,7 @@ def main() -> None:
             break  
 
         except RuntimeError as exc:
-            output_failure(str(exc))   # non-retryable API error
+            output_failure(str(exc))   
 
         except ValueError as exc:
             last_error = str(exc)
