@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -10,13 +9,8 @@
 </head>
 
 <body>
-
-    <!-- Navbar -->
     <div id="navbar-placeholder"></div>
-
     <main class="main quiz-main">
-
-        <!-- Loading Overlay (while AI generates questions) -->
         <div id="quiz-loading" class="ai-loading-overlay" style="display:none;">
             <div class="ai-loading-card">
                 <div class="ai-spinner"></div>
@@ -25,10 +19,8 @@
             </div>
         </div>
 
-        <!-- Error Banner -->
         <div id="quiz-error" class="alert alert-error" style="display:none;"></div>
-
-        <!-- ── SCREEN 1: Start ────────────────────────────────────────────── -->
+        
         <div id="quiz-start-screen" class="quiz-screen">
             <div class="card quiz-card">
 
@@ -40,7 +32,6 @@
                     <span class="quiz-meta-badge">⏱️ Questions: <span id="quiz-question-count">10</span></span>
                 </div>
 
-                <!-- Settings -->
                 <div class="quiz-settings">
                     <div class="quiz-setting-row">
                         <label class="form-label" for="quiz-count">Number of Questions</label>
@@ -72,40 +63,31 @@
                     <a href="#" onclick="window.history.back(); return false;">← Back to Note</a>
                 </p>
             </div>
-        </div><!-- /quiz-start-screen -->
+        </div>
 
-        <!-- ── SCREEN 2: Question ─────────────────────────────────────────── -->
         <div id="quiz-question-screen" class="quiz-screen" style="display:none;">
             <div class="card quiz-card">
 
-                <!-- Progress Bar -->
                 <div class="question-progress">
                     <div class="question-progress-bar" id="quiz-progress-bar" style="width:0%"></div>
                 </div>
 
-                <!-- Meta Row -->
                 <div class="question-meta-row">
                     <span class="question-counter" id="quiz-counter">Question 1 of 10</span>
                     <span class="question-timer" id="quiz-timer">⏱ 60s</span>
                 </div>
 
-                <!-- Score Badge -->
                 <div class="score-live">
                     Score: <strong id="quiz-live-score">0</strong>
                 </div>
 
-                <!-- Question Text -->
                 <p class="question-text" id="quiz-question-text">Loading question…</p>
 
-                <!-- Options -->
                 <div class="options-list" id="quiz-options">
-                    <!-- Populated by quiz.js → renderQuestion() -->
                 </div>
-
             </div>
-        </div><!-- /quiz-question-screen -->
+        </div>
 
-        <!-- ── SCREEN 3: Result ───────────────────────────────────────────── -->
         <div id="quiz-result-screen" class="quiz-screen" style="display:none;">
             <div class="card quiz-card result-card">
 
@@ -119,7 +101,6 @@
                 <h2 class="result-message" id="result-message">Well done!</h2>
 
                 <div class="result-breakdown" id="result-breakdown">
-                    <!-- Optionally populated with per-question breakdown -->
                 </div>
 
                 <div class="result-actions">
@@ -129,42 +110,18 @@
                 </div>
 
             </div>
-        </div><!-- /quiz-result-screen -->
+        </div>
 
     </main>
 
     <script src="js/auth.js"></script>
     <script src="js/upload.js"></script>
     <script src="js/summary.js"></script>
-    <!-- <script src="../js/quiz.js"></script> -->
     <script src="js/quiz.js?v=2"></script>
     <script src="js/chat.js"></script>
     <script src="js/main.js"></script>
 
-    <!-- <script>
-        // Keep live score badge updated
-        const origHandleAnswer = handleAnswer;
-        window.handleAnswer = function (selectedIndex) {
-            origHandleAnswer(selectedIndex);
-            const el = document.getElementById("quiz-live-score");
-            if (el) el.textContent = quizState.score;
-        };
-
-        // Enable Start button only after questions are generated
-        const origGenerateQuiz = generateQuiz;
-        window.generateQuiz = async function (noteId, count) {
-            const result = await origGenerateQuiz(noteId, count);
-            if (result) {
-                const startBtn = document.getElementById("start-quiz-btn");
-                if (startBtn) startBtn.disabled = false;
-            }
-            return result;
-        };
-    </script> -->
-
-
     <script>
-        // Keep live score badge updated
         const origHandleAnswer = handleAnswer;
         window.handleAnswer = function (selectedIndex) {
             origHandleAnswer(selectedIndex);
