@@ -1,13 +1,7 @@
 <?php
-// backend/config/env.php
-// Loads .env locally if it exists.
-// On Render (or any server with environment variables),
-// it silently skips loading the file.
 
 $envPath = __DIR__ . '/../../.env';
 
-// If .env doesn't exist, just continue.
-// Render already provides environment variables.
 if (!file_exists($envPath)) {
     return;
 }
@@ -31,7 +25,6 @@ foreach ($lines as $line) {
     $key = trim($key);
     $value = trim($value);
 
-    // Don't overwrite environment variables already set
     if (getenv($key) !== false) {
         continue;
     }
