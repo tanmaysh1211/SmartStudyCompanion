@@ -1,43 +1,7 @@
--- ════════════════════════════════════════════════════════════════
--- database/seed.sql  —  Smart Study Companion
--- ════════════════════════════════════════════════════════════════
--- Demo / development seed data.
--- Run AFTER schema.sql:
---   mysql -u root -p smart_study_companion < database/schema.sql
---   mysql -u root -p smart_study_companion < database/seed.sql
---
--- ⚠  DO NOT run this on a production database.
---    It inserts demo accounts with known passwords and
---    wipes existing data for the seeded tables.
---
--- Demo accounts created:
---   ┌──────────────────────────────┬──────────────────┐
---   │ Email                        │ Password         │
---   ├──────────────────────────────┼──────────────────┤
---   │ alice@studyai.com            │ Password@123     │
---   │ bob@studyai.com              │ Password@123     │
---   │ carol@studyai.com            │ Password@123     │
---   │ admin@studyai.com            │ Admin@2025       │
---   └──────────────────────────────┴──────────────────┘
---
--- Password hashes are bcrypt cost-12 hashes of the passwords
--- shown above. Generated with PHP:
---   password_hash('Password@123', PASSWORD_BCRYPT, ['cost'=>12])
--- ════════════════════════════════════════════════════════════════
-
 SET FOREIGN_KEY_CHECKS = 0;
 SET SQL_MODE = 'NO_AUTO_VALUE_ON_ZERO';
 SET time_zone = '+00:00';
 
--- ════════════════════════════════════════════════════════════════
--- 0.  Clean slate  (seed tables only — preserves schema)
--- ════════════════════════════════════════════════════════════════
-
--- TRUNCATE TABLE token_blacklist;
--- TRUNCATE TABLE quiz_results;
--- TRUNCATE TABLE ai_summaries;
--- TRUNCATE TABLE notes;
--- TRUNCATE TABLE users;
 
 DELETE FROM chat_history;
 DELETE FROM token_blacklist;
@@ -48,18 +12,9 @@ DELETE FROM users;
 
 SET FOREIGN_KEY_CHECKS = 1;
 
--- ════════════════════════════════════════════════════════════════
--- 1.  USERS
--- ════════════════════════════════════════════════════════════════
--- All demo passwords are:  Password@123
--- Admin password is:       Admin@2025
--- (bcrypt cost-12 hashes)
--- ════════════════════════════════════════════════════════════════
-
 INSERT INTO users
     (id, name, email, password_hash, is_active, last_login, created_at)
 VALUES
-    -- 1. Alice — active student with full history
     (
         1,
         'Alice Johnson',
@@ -70,7 +25,6 @@ VALUES
         '2025-09-01 10:00:00'
     ),
 
-    -- 2. Bob — active student, fewer notes
     (
         2,
         'Bob Martinez',
@@ -81,7 +35,6 @@ VALUES
         '2025-09-10 09:30:00'
     ),
 
-    -- 3. Carol — newer student, minimal data
     (
         3,
         'Carol Lee',
@@ -92,7 +45,6 @@ VALUES
         '2025-10-15 16:45:00'
     ),
 
-    -- 4. Admin — account management (is_active = 1)
     (
         4,
         'Admin User',
@@ -103,32 +55,21 @@ VALUES
         '2025-08-01 08:00:00'
     ),
 
-    -- 5. Dave — inactive / deactivated account
     (
         5,
         'Dave Smith',
         'dave@studyai.com',
         '$2y$12$eImiTXuWVxfM37uY4JANjOe5XscKDjG7LiRqoGvRBqfn/X.Ra6rei',
-        0,          -- deactivated
+        0,          
         NULL,
         '2025-09-05 12:00:00'
     );
 
--- ════════════════════════════════════════════════════════════════
--- 2.  NOTES
--- ════════════════════════════════════════════════════════════════
--- Realistic study-note content across different subjects.
--- Content is intentionally abbreviated here — the real app
--- populates this via PDF extraction / upload.
--- ════════════════════════════════════════════════════════════════
 
 INSERT INTO notes
     (id, user_id, name, content, file_type, file_size,
      file_path, upload_date, last_accessed_at, created_at, deleted_at)
 VALUES
-
--- ── Alice's Notes ────────────────────────────────────────────
-
 (
     1, 1,
     'Operating System Notes — Chapter 7: Deadlocks',
@@ -384,7 +325,6 @@ SYSTEMS OF LINEAR EQUATIONS
     NULL
 ),
 
--- Soft-deleted note (tests that deleted notes don't appear)
 (
     5, 1,
     'Old Chemistry Notes (deleted)',
@@ -395,10 +335,9 @@ SYSTEMS OF LINEAR EQUATIONS
     '2025-09-15',
     NULL,
     '2025-09-15 10:00:00',
-    '2025-10-01 09:00:00'   -- deleted_at is set
+    '2025-10-01 09:00:00'   
 ),
 
--- ── Bob's Notes ──────────────────────────────────────────────
 
 (
     6, 2,
@@ -526,7 +465,6 @@ INDEXES
     NULL
 ),
 
--- ── Carol's Notes ────────────────────────────────────────────
 
 (
     8, 3,
@@ -601,46 +539,32 @@ EVALUATION METRICS
     NULL
 );
 
--- ════════════════════════════════════════════════════════════════
--- 3.  QUIZ RESULTS
--- ════════════════════════════════════════════════════════════════
-
 INSERT INTO quiz_results
     (id, user_id, note_id, score, total, percent, created_at)
 VALUES
 
--- Alice — multiple attempts on Deadlocks (shows improvement)
 (1,  1, 1,  6, 10, 60,  '2025-10-31 08:00:00'),
 (2,  1, 1,  7, 10, 70,  '2025-10-31 09:15:00'),
 (3,  1, 1,  9, 10, 90,  '2025-10-31 11:00:00'),
 
--- Alice — BST quiz attempts
 (4,  1, 2,  5, 10, 50,  '2025-10-28 11:00:00'),
 (5,  1, 2,  8, 10, 80,  '2025-10-29 14:30:00'),
 
--- Alice — Networks quiz
 (6,  1, 3,  9, 10, 90,  '2025-10-26 10:00:00'),
 (7,  1, 3, 10, 10, 100, '2025-10-27 09:30:00'),
 
--- Alice — Linear Algebra quiz (struggled)
 (8,  1, 4,  3, 10, 30,  '2025-10-21 15:00:00'),
 (9,  1, 4,  5, 10, 50,  '2025-10-22 10:00:00'),
 
--- Bob — Python OOP quiz
 (10, 2, 6,  7, 10, 70,  '2025-10-27 13:00:00'),
 (11, 2, 6,  9, 10, 90,  '2025-10-28 09:00:00'),
 
--- Bob — Database quiz
 (12, 2, 7,  6, 10, 60,  '2025-10-23 14:00:00'),
 (13, 2, 7,  8, 10, 80,  '2025-10-25 16:00:00'),
 (14, 2, 7, 10, 10, 100, '2025-10-27 11:30:00'),
 
--- Carol — ML quiz (first attempt)
 (15, 3, 8,  7, 10, 70,  '2025-10-31 10:30:00');
 
--- ════════════════════════════════════════════════════════════════
--- 4.  AI SUMMARIES  (cached Gemini-generated summaries)
--- ════════════════════════════════════════════════════════════════
 
 INSERT INTO ai_summaries
     (id, note_id, user_id, summary, created_at)
@@ -754,10 +678,6 @@ The choice of metric depends on the problem — for imbalanced datasets, F1 Scor
     '2025-10-31 10:20:00'
 );
 
--- ════════════════════════════════════════════════════════════════
--- 5.  TOKEN BLACKLIST  (example revoked tokens for testing)
--- ════════════════════════════════════════════════════════════════
--- These are SHA-256 hashes of fake tokens — purely illustrative.
 
 INSERT INTO token_blacklist
     (id, token_hash, user_id, expires_at, revoked_at)
@@ -776,22 +696,3 @@ VALUES
     '2025-10-29 12:00:00',
     '2025-10-28 20:15:00'
 );
-
--- ════════════════════════════════════════════════════════════════
--- 6.  Verification queries
--- ════════════════════════════════════════════════════════════════
--- Run these manually to confirm seed data was inserted correctly:
---
--- SELECT id, name, email, is_active FROM users;
--- SELECT id, user_id, name, file_type, file_size, deleted_at FROM notes;
--- SELECT id, user_id, note_id, score, total, percent FROM quiz_results ORDER BY user_id, note_id;
--- SELECT id, note_id, user_id, LEFT(summary, 60) AS preview FROM ai_summaries;
--- SELECT id, user_id, expires_at FROM token_blacklist;
---
--- Expected counts:
---   users:          5  (4 active + 1 inactive)
---   notes:          8  (7 active + 1 soft-deleted)
---   quiz_results:  15
---   ai_summaries:   3
---   token_blacklist:2
--- ════════════════════════════════════════════════════════════════
