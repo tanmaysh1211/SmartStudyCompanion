@@ -1,42 +1,19 @@
 <?php
-/**
- * backend/ai/generate_summary.php
- * ─────────────────────────────────────────────────────────────
- * POST /backend/ai/generate_summary.php
- * Authorization: Bearer <token>
- * Content-Type: application/json
- *
- * Body: { "note_id": int, "regenerate": bool (optional) }
- *
- * Pipes JSON to ai/generate_summary.py via stdin (proc_open).
- * Caches result in ai_summaries table.
- *
- * Returns JSON:
- *   Success → { "success": true, "summary": "...",
- *               "word_count": int, "cached": bool, "model": string }
- *   Failure → { "success": false, "message": "..." }
- * ─────────────────────────────────────────────────────────────
- */
-
 declare(strict_types=1);
-
 require_once __DIR__ . '/../config/cors.php';
 require_once __DIR__ . '/../config/db.php';
 require_once __DIR__ . '/../config/jwt_helper.php';
 require_once __DIR__ . '/../auth/verify_token.php';
 
-// ── Auth guard ────────────────────────────────────────────────
 $authUser = requireAuth();
 $userId   = (int)$authUser['sub'];
 
-// ── Only POST ─────────────────────────────────────────────────
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     http_response_code(405);
     echo json_encode(['success' => false, 'message' => 'Method not allowed.']);
     exit;
 }
 
-// ── Parse body ────────────────────────────────────────────────
 $body       = json_decode(file_get_contents('php://input'), true);
 $noteId     = isset($body['note_id'])    ? (int)$body['note_id']     : 0;
 $regenerate = isset($body['regenerate']) ? (bool)$body['regenerate'] : false;
@@ -47,7 +24,6 @@ if ($noteId <= 0) {
     exit;
 }
 
-// ── Fetch note (ownership check) ──────────────────────────────
 try {
     $stmt = $pdo->prepare(
         'SELECT id, name, content FROM notes
@@ -68,7 +44,6 @@ if (!$note) {
     exit;
 }
 
-// ── Check cache (skip if regenerate=true) ─────────────────────
 if (!$regenerate) {
     try {
         $cacheStmt = $pdo->prepare(
@@ -93,7 +68,6 @@ if (!$regenerate) {
     }
 }
 
-// ── Config ────────────────────────────────────────────────────
 $apiKey = getenv('OPENAI_API_KEY')
        ?: ($_ENV['OPENAI_API_KEY']    ?? '')
        ?: ($_SERVER['OPENAI_API_KEY'] ?? '');
@@ -102,8 +76,6 @@ $model  = getenv('OPENAI_MODEL')
        ?: ($_ENV['OPENAI_MODEL']    ?? '')
        ?: ($_SERVER['OPENAI_MODEL'] ?? 'gpt-4o-mini');
 
-// Hardcoded venv Python path — Apache doesn't inherit shell env
-// $pythonBin  = 'C:\\xampp\\htdocs\\SmartStudyCompanion\\venv\\Scripts\\python.exe';
 $pythonBin = getenv('PYTHON_BIN') ?: 'python3';
 $scriptPath = realpath(__DIR__ . '/../../ai/generate_summary.py');
 
@@ -123,7 +95,6 @@ if (!$scriptPath || !is_file($scriptPath)) {
     exit;
 }
 
-// ── Build JSON payload ────────────────────────────────────────
 $payload = json_encode([
     'content'   => $note['content'],
     'note_name' => $note['name'],
@@ -136,11 +107,10 @@ if ($payload === false) {
     exit;
 }
 
-// ── Launch Python via proc_open with stdin ────────────────────
 $descriptors = [
-    0 => ['pipe', 'r'],   // stdin  — we write JSON here
-    1 => ['pipe', 'w'],   // stdout — we read reply here
-    2 => ['pipe', 'w'],   // stderr — captured for debugging
+    0 => ['pipe', 'r'],   
+    1 => ['pipe', 'w'],   
+    2 => ['pipe', 'w'],   
 ];
 
 $env = [
@@ -173,11 +143,9 @@ if (!is_resource($process)) {
     exit;
 }
 
-// Write payload to stdin then close it
 fwrite($pipes[0], $payload);
 fclose($pipes[0]);
 
-// Read output with timeout
 stream_set_blocking($pipes[1], false);
 stream_set_blocking($pipes[2], false);
 
@@ -218,7 +186,6 @@ if (!empty(trim($stderr))) {
     error_log('[generate_summary.php] Python stderr: ' . substr($stderr, 0, 1000));
 }
 
-// ── Handle timeout ────────────────────────────────────────────
 if ($timedOut) {
     http_response_code(504);
     echo json_encode([
@@ -228,7 +195,6 @@ if ($timedOut) {
     exit;
 }
 
-// ── Parse output ──────────────────────────────────────────────
 $trimmedOutput = trim($output);
 
 if ($trimmedOutput === '') {
@@ -249,7 +215,6 @@ if (!is_array($result)) {
     exit;
 }
 
-// ── Handle Python-level failure ───────────────────────────────
 if (empty($result['success'])) {
     $pythonMsg  = $result['message'] ?? 'Summary generation failed.';
     error_log('[generate_summary.php] Python failure: ' . $pythonMsg);
@@ -273,7 +238,6 @@ if (empty($result['success'])) {
     exit;
 }
 
-// ── Extract summary ───────────────────────────────────────────
 $summary   = trim((string)($result['summary']    ?? ''));
 $wordCount = (int)($result['word_count'] ?? str_word_count($summary));
 
@@ -283,7 +247,6 @@ if ($summary === '') {
     exit;
 }
 
-// ── Cache the result ──────────────────────────────────────────
 try {
     $upsert = $pdo->prepare(
         'INSERT INTO ai_summaries (note_id, user_id, summary, word_count, created_at)
@@ -296,10 +259,8 @@ try {
     $upsert->execute([':nid' => $noteId, ':uid' => $userId, ':sum' => $summary, ':wc' => $wordCount]);
 } catch (PDOException $e) {
     error_log('[generate_summary.php] Cache upsert: ' . $e->getMessage());
-    // Non-fatal — still return the summary
 }
 
-// ── Success ───────────────────────────────────────────────────
 http_response_code(200);
 echo json_encode([
     'success'    => true,
