@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -9,11 +8,7 @@
 </head>
 
 <body>
-
-    <!-- Navbar -->
     <div id="navbar-placeholder"></div>
-
-    <!-- Hero Section -->
     <section class="hero">
         <div class="hero-text">
             <h1 class="hero-title">Empower Your Learning<br>Journey</h1>
@@ -30,7 +25,6 @@
         <div class="hero-visual" aria-hidden="true">📱</div>
     </section>
 
-    <!-- Features Strip -->
     <section class="features-strip">
         <div class="feature-item">
             <div class="feature-icon">📂</div>
@@ -59,18 +53,15 @@
         </div>
     </section>
 
-    <!-- Recent Notes (shown only when logged in) -->
     <main class="main" id="home-main" style="display:none;">
         <h2 class="section-title">Recent Notes</h2>
         <div class="notes-grid" id="recent-notes">
-            <!-- Populated by main.js → initDashboardPage() -->
         </div>
         <div class="section-cta">
             <a href="dashboard.html" class="btn-secondary">View All Notes →</a>
         </div>
     </main>
 
-    <!-- CTA for guests -->
     <section class="cta-section" id="guest-cta">
         <h2>Ready to study smarter?</h2>
         <p>Create a free account and start uploading your notes today.</p>
@@ -85,12 +76,10 @@
     <script src="js/main.js"></script>
 
     <script>
-        // Show recent notes section only for logged-in users
         if (isLoggedIn()) {
             document.getElementById("home-main").style.display = "block";
             document.getElementById("guest-cta").style.display = "none";
         }
     </script>
 </body>
-
 </html>
