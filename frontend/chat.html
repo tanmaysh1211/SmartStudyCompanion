@@ -11,14 +11,12 @@
 
 <body>
 
-    <!-- Navbar -->
     <div id="navbar-placeholder"></div>
 
     <main class="main chat-main">
 
         <div class="chat-wrapper card">
 
-            <!-- Chat Header -->
             <div class="chat-header">
                 <div class="chat-header-left">
                     <div class="chat-avatar" aria-hidden="true">🤖</div>
@@ -31,23 +29,17 @@
                     <button class="btn-icon" id="clear-chat-btn" title="Clear conversation">🗑 Clear</button>
                     <a class="btn-secondary btn-sm" href="#" onclick="window.history.back(); return false;">← Back</a>
                 </div>
-            </div><!-- /chat-header -->
+            </div>
 
-            <!-- Suggested Prompts -->
             <div class="suggested-prompts-bar">
                 <span class="prompt-bar-label">Try asking:</span>
                 <div class="suggested-prompts" id="suggested-prompts">
-                    <!-- Populated by chat.js → renderSuggestedPrompts() -->
                 </div>
             </div>
 
-            <!-- Messages Area -->
             <div class="chat-messages" id="chat-messages" role="log" aria-live="polite" aria-label="Chat messages">
-                <!-- Messages appended by chat.js → appendMessage() -->
-                <!-- Welcome message rendered on page load -->
             </div>
 
-            <!-- Input Row -->
             <div class="chat-input-area">
                 <div class="chat-input-row">
                     <textarea class="chat-input" id="chat-input" placeholder="Ask a question about your content…"
@@ -59,9 +51,8 @@
                 <p class="chat-input-hint">Press <kbd>Enter</kbd> to send · <kbd>Shift+Enter</kbd> for new line</p>
             </div>
 
-        </div><!-- /chat-wrapper -->
+        </div>
 
-        <!-- Scope Notice -->
         <div class="chat-notice">
             <span class="notice-icon">ℹ️</span>
             The AI answers questions <strong>only</strong> about your uploaded note content.
@@ -82,7 +73,7 @@
             },
             svg: { fontCache: 'global' },
             startup: {
-                typeset: false   // don't auto-typeset on load, we call it manually
+                typeset: false   
             },
             options: {
                 skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre']
@@ -98,5 +89,4 @@
     <script src="js/main.js"></script>
 
 </body>
-
 </html>
