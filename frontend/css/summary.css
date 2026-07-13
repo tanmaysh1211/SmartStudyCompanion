@@ -1,5 +1,3 @@
-/* ─── Summary Page Layout ────────────────────────────────────────────────────── */
-
 .summary-main {
     display: flex;
     flex-direction: column;
@@ -16,8 +14,6 @@
     flex-direction: column;
     overflow: hidden;
 }
-
-/* ─── Header ──────────────────────────────────────────────────────────────────── */
 
 .summary-header {
     display: flex;
@@ -67,8 +63,6 @@
     flex-wrap: wrap;
 }
 
-/* ─── Loading ─────────────────────────────────────────────────────────────────── */
-
 .summary-loading {
     display: flex;
     flex-direction: column;
@@ -99,8 +93,6 @@
     margin: 0;
 }
 
-/* ─── Error ───────────────────────────────────────────────────────────────────── */
-
 .summary-error {
     margin: 1.5rem;
     padding: 0.875rem 1rem;
@@ -111,8 +103,6 @@
     font-size: 0.875rem;
 }
 
-/* ─── Summary Content — Beautiful Markdown Rendering ─────────────────────────── */
-
 .summary-content {
     padding: 2rem 2.5rem;
     line-height: 1.8;
@@ -120,7 +110,6 @@
     font-size: 0.975rem;
 }
 
-/* Section headings rendered from ## */
 .summary-content h1,
 .summary-content h2 {
     font-size: 1.25rem;
@@ -131,7 +120,6 @@
     border-bottom: 2px solid rgba(108, 92, 231, 0.15);
 }
 
-/* Sub-headings rendered from ### */
 .summary-content h3,
 .summary-content h4 {
     font-size: 1.05rem;
@@ -140,19 +128,16 @@
     margin: 1.5rem 0 0.5rem;
 }
 
-/* First heading — no top margin */
 .summary-content h1:first-child,
 .summary-content h2:first-child,
 .summary-content h3:first-child {
     margin-top: 0;
 }
 
-/* Paragraphs */
 .summary-content p {
     margin: 0.6rem 0;
 }
 
-/* Bullet lists */
 .summary-content ul,
 .summary-content ol {
     padding-left: 1.5rem;
@@ -168,19 +153,16 @@
     margin-top: 0.3rem;
 }
 
-/* Bold */
 .summary-content strong {
     font-weight: 600;
     color: var(--text, #1a1a2e);
 }
 
-/* Italic */
 .summary-content em {
     font-style: italic;
     color: #4b5563;
 }
 
-/* Inline code */
 .summary-content code {
     background: rgba(108, 92, 231, 0.08);
     border: 1px solid rgba(108, 92, 231, 0.15);
@@ -191,7 +173,6 @@
     color: #6c5ce7;
 }
 
-/* Code blocks */
 .summary-content pre {
     background: #1e1e2e;
     border-radius: 8px;
@@ -208,7 +189,6 @@
     font-size: 0.875em;
 }
 
-/* Blockquotes */
 .summary-content blockquote {
     border-left: 3px solid var(--primary, #6c5ce7);
     margin: 1rem 0;
@@ -218,15 +198,12 @@
     border-radius: 0 6px 6px 0;
 }
 
-/* Horizontal rules — used as section dividers */
 .summary-content hr {
     border: none;
     border-top: 1px solid var(--border, #e5e7eb);
     margin: 1.5rem 0;
 }
 
-/* ── LaTeX display math blocks ── */
-/* MathJax renders \[...\] as a block — give it breathing room */
 .summary-content .MJX-TEX,
 .summary-content mjx-container[display="true"] {
     display: block;
@@ -235,27 +212,22 @@
     margin: 0.75rem 0;
 }
 
-/* Inline math spacing */
 .summary-content mjx-container {
     margin: 0 2px;
 }
 
-/* Key Takeaways section — highlighted */
 .summary-content h2:last-of-type,
 .summary-content h3:last-of-type {
     color: #059669;
     border-color: rgba(5, 150, 105, 0.2);
 }
 
-/* Keyword highlight from search */
 mark.keyword-highlight {
     background: #fef08a;
     border-radius: 2px;
     padding: 0 2px;
     color: inherit;
 }
-
-/* ─── Actions Bar ─────────────────────────────────────────────────────────────── */
 
 .summary-actions {
     display: flex;
@@ -266,8 +238,6 @@ mark.keyword-highlight {
     background: var(--surface-alt, #f9fafb);
     flex-wrap: wrap;
 }
-
-/* ─── Keyword Search ──────────────────────────────────────────────────────────── */
 
 .summary-search-bar {
     padding: 0.875rem 1.5rem;
@@ -291,8 +261,6 @@ mark.keyword-highlight {
     box-shadow: 0 0 0 3px rgba(108, 92, 231, 0.1);
 }
 
-/* ─── Notice ──────────────────────────────────────────────────────────────────── */
-
 .summary-notice {
     display: flex;
     align-items: center;
@@ -303,8 +271,6 @@ mark.keyword-highlight {
     width: 100%;
     padding: 0 0.25rem;
 }
-
-/* ─── Responsive ──────────────────────────────────────────────────────────────── */
 
 @media (max-width: 640px) {
     .summary-header {
