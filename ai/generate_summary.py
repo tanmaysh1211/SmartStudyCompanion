@@ -1,11 +1,4 @@
-#!/usr/bin/env python
-"""
-ai/generate_summary.py
-Reads JSON from stdin, generates a clean readable summary via OpenAI.
-"""
-
 from __future__ import annotations
-
 import io
 import json
 import os
@@ -14,14 +7,9 @@ import sys
 import textwrap
 import time
 
-# ── Force UTF-8 output on Windows ────────────────────────────────────────────
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
 sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding='utf-8')
 
-
-# ════════════════════════════════════════════════════════════════
-# 1.  Output helpers
-# ════════════════════════════════════════════════════════════════
 
 def output_success(summary: str) -> None:
     word_count = len(summary.split())
@@ -31,19 +19,13 @@ def output_success(summary: str) -> None:
     ))
     sys.exit(0)
 
-
 def output_failure(message: str) -> None:
     print(json.dumps({"success": False, "message": message}, ensure_ascii=False))
     sys.exit(1)
 
 
-# ════════════════════════════════════════════════════════════════
-# 2.  Input parsing
-# ════════════════════════════════════════════════════════════════
-
 MAX_INPUT_CHARS   = 120_000
 MIN_CONTENT_CHARS = 50
-
 
 def parse_args() -> dict:
     try:
@@ -73,11 +55,6 @@ def parse_args() -> dict:
 
     return {"content": content, "note_name": note_name, "max_words": max_words}
 
-
-# ════════════════════════════════════════════════════════════════
-# 3.  Prompt
-# ════════════════════════════════════════════════════════════════
-
 SUMMARY_SYSTEM = textwrap.dedent("""\
     You are an expert academic tutor creating study summaries for students.
 
@@ -104,7 +81,7 @@ SUMMARY_SYSTEM = textwrap.dedent("""\
 """)
 
 
-def build_prompt(content: str, note_name: str, max_words: int) -> str:
+def build_prompt(content: str, note_name: str, max_words: int):
     return textwrap.dedent(f"""\
         Create a comprehensive study summary for "{note_name}".
         Target length: approximately {max_words} words.
@@ -117,17 +94,11 @@ def build_prompt(content: str, note_name: str, max_words: int) -> str:
         Make it easy for a student to read and understand.
     """)
 
-
-# ════════════════════════════════════════════════════════════════
-# 4.  OpenAI call
-# ════════════════════════════════════════════════════════════════
-
 DEFAULT_MODEL   = "gpt-4o-mini"
 MAX_RETRIES     = 3
 RETRY_DELAY_SEC = 2.0
 
-
-def call_openai(prompt: str, system_prompt: str) -> str:
+def call_openai(prompt: str, system_prompt: str):
     try:
         from openai import OpenAI, AuthenticationError, RateLimitError, APIError
     except ImportError:
@@ -180,13 +151,7 @@ def call_openai(prompt: str, system_prompt: str) -> str:
 
     raise RuntimeError(f"OpenAI API failed after {MAX_RETRIES} attempts. Last error: {last_error}")
 
-
-# ════════════════════════════════════════════════════════════════
-# 5.  Post-processing
-# ════════════════════════════════════════════════════════════════
-
-def post_process(summary: str) -> str:
-    # Strip common preamble phrases
+def post_process(summary: str):
     for pat in [
         r"^(here\s+is\s+)?(a\s+)?(comprehensive\s+)?(study\s+)?summary[:\s]+",
         r"^summary[:\s]+",
@@ -194,19 +159,9 @@ def post_process(summary: str) -> str:
         r"^sure[,.]?\s+",
     ]:
         summary = re.sub(pat, "", summary, flags=re.IGNORECASE).strip()
-
-    # Ensure headings have a blank line before them
     summary = re.sub(r"([^\n])\n(#{1,3}\s)", r"\1\n\n\2", summary)
-
-    # Collapse excess blank lines
     summary = re.sub(r"\n{3,}", "\n\n", summary)
-
     return summary.strip()
-
-
-# ════════════════════════════════════════════════════════════════
-# 6.  Main
-# ════════════════════════════════════════════════════════════════
 
 def main() -> None:
     args = parse_args()
