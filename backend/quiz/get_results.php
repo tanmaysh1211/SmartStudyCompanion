@@ -1,82 +1,23 @@
 <?php
-/**
- * backend/quiz/get_results.php
- * ─────────────────────────────────────────────────────────────
- * GET /backend/quiz/get_results.php
- * Authorization: Bearer <token>
- *
- * Optional query parameters:
- *   ?note_id=<int>      Filter results for a single note
- *   ?limit=<int>        Max rows returned (default 50, max 200)
- *   ?sort=newest        newest | oldest | score_asc | score_desc
- *
- * Returns JSON:
- *   {
- *     "success": true,
- *
- *     // Individual quiz attempt rows
- *     "results": [
- *       {
- *         "id"         : int,
- *         "note_id"    : int,
- *         "note_name"  : string,
- *         "score"      : int,
- *         "total"      : int,
- *         "percent"    : int,
- *         "label"      : string,   // Outstanding / Great / Good / Keep Practicing
- *         "date"       : string    // "MM/DD/YYYY"
- *       }, ...
- *     ],
- *
- *     // Aggregate stats (used by the Report page stat cards)
- *     "stats": {
- *       "notes_count"   : int,     // total notes uploaded by this user
- *       "quizzes_taken" : int,     // total completed quiz attempts
- *       "avg_score"     : float,   // average percent across all attempts
- *       "best_score"    : int,     // highest percent ever achieved
- *       "total_correct" : int,     // cumulative correct answers
- *       "total_answered": int      // cumulative total questions answered
- *     },
- *
- *     // Per-note breakdown (used by an optional per-note stats view)
- *     "by_note": [
- *       {
- *         "note_id"    : int,
- *         "note_name"  : string,
- *         "attempts"   : int,
- *         "avg_percent": float,
- *         "best"       : int,
- *         "latest_date": string
- *       }, ...
- *     ]
- *   }
- * ─────────────────────────────────────────────────────────────
- */
-
 declare(strict_types=1);
-
 require_once __DIR__ . '/../config/cors.php';
 require_once __DIR__ . '/../config/db.php';
 require_once __DIR__ . '/../config/jwt_helper.php';
 require_once __DIR__ . '/../auth/verify_token.php';
 
-// ── Auth guard ────────────────────────────────────────────────
 $authUser = requireAuth();
 $userId   = (int)$authUser['sub'];
 
-// ── Only GET ──────────────────────────────────────────────────
 if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
     http_response_code(405);
     echo json_encode(['success' => false, 'message' => 'Method not allowed. Use GET.']);
     exit;
 }
 
-// ── Query parameters ──────────────────────────────────────────
 $filterNoteId = isset($_GET['note_id']) ? (int)$_GET['note_id'] : 0;
 $limit        = min(200, max(1, (int)($_GET['limit'] ?? 50)));
 $sort         = trim((string)($_GET['sort'] ?? 'newest'));
 
-// Allowed sort maps
 $sortMap = [
     'newest'     => 'qr.created_at DESC',
     'oldest'     => 'qr.created_at ASC',
@@ -85,7 +26,6 @@ $sortMap = [
 ];
 $orderBy = $sortMap[$sort] ?? $sortMap['newest'];
 
-// ── Helper: performance label from percent ────────────────────
 function performanceLabel(int $percent): string
 {
     return match(true) {
@@ -96,11 +36,7 @@ function performanceLabel(int $percent): string
     };
 }
 
-// ═══════════════════════════════════════════════════════════════
-// 1. Individual quiz results
-// ═══════════════════════════════════════════════════════════════
 try {
-    // Build WHERE
     $where  = 'qr.user_id = :user_id';
     $params = [':user_id' => $userId];
 
@@ -142,7 +78,6 @@ try {
     exit;
 }
 
-// Decorate with label and cast types
 $results = array_map(static function (array $row): array {
     $row['id']      = (int)$row['id'];
     $row['note_id'] = (int)$row['note_id'];
@@ -150,15 +85,11 @@ $results = array_map(static function (array $row): array {
     $row['total']   = (int)$row['total'];
     $row['percent'] = (int)$row['percent'];
     $row['label']   = performanceLabel($row['percent']);
-    unset($row['datetime_raw']); // internal field — don't expose
+    unset($row['datetime_raw']); 
     return $row;
 }, $rawResults);
 
-// ═══════════════════════════════════════════════════════════════
-// 2. Aggregate stats
-// ═══════════════════════════════════════════════════════════════
 try {
-    // Overall quiz stats
     $statsStmt = $pdo->prepare(
         'SELECT
              COUNT(*)          AS quizzes_taken,
@@ -172,7 +103,6 @@ try {
     $statsStmt->execute([':user_id' => $userId]);
     $statsRow = $statsStmt->fetch(PDO::FETCH_ASSOC);
 
-    // Notes count
     $notesCountStmt = $pdo->prepare(
         'SELECT COUNT(*) FROM notes WHERE user_id = :user_id AND deleted_at IS NULL'
     );
@@ -181,7 +111,6 @@ try {
 
 } catch (PDOException $e) {
     error_log('[get_results.php] Stats query error: ' . $e->getMessage());
-    // Non-fatal — return empty stats rather than failing the whole request
     $statsRow   = [];
     $notesCount = 0;
 }
@@ -195,9 +124,6 @@ $stats = [
     'total_answered' => (int)($statsRow['total_answered'] ?? 0),
 ];
 
-// ═══════════════════════════════════════════════════════════════
-// 3. Per-note breakdown
-// ═══════════════════════════════════════════════════════════════
 try {
     $byNoteStmt = $pdo->prepare(
         "SELECT
@@ -231,9 +157,6 @@ $byNote = array_map(static function (array $row): array {
     return $row;
 }, $rawByNote);
 
-// ═══════════════════════════════════════════════════════════════
-// 4. Score trend (last 10 attempts — used for the bar chart)
-// ═══════════════════════════════════════════════════════════════
 try {
     $trendStmt = $pdo->prepare(
         "SELECT
@@ -247,7 +170,7 @@ try {
          LIMIT 10"
     );
     $trendStmt->execute([':user_id' => $userId]);
-    $trend = array_reverse(          // chronological order for chart
+    $trend = array_reverse(          
         $trendStmt->fetchAll(PDO::FETCH_ASSOC)
     );
 
@@ -261,9 +184,6 @@ try {
     $trend = [];
 }
 
-// ═══════════════════════════════════════════════════════════════
-// 5. Response
-// ═══════════════════════════════════════════════════════════════
 http_response_code(200);
 echo json_encode([
     'success' => true,
