@@ -1,15 +1,6 @@
-/**
- * main.js  —  Smart Study Companion
- * App entry point + custom delete modal + empty state renderer.
- */
-
-// ─── Page Detection ───────────────────────────────────────────────────────────
-
 function getCurrentPage() {
   return window.location.pathname.split("/").pop() || "index.html";
 }
-
-// ─── Shared UI ────────────────────────────────────────────────────────────────
 
 async function loadNavbar() {
   const placeholder = document.getElementById("navbar-placeholder");
@@ -52,8 +43,6 @@ function highlightActiveNavLink() {
     link.classList.toggle("active", href.endsWith(page));
   });
 }
-
-// ─── Delete Confirmation Modal ────────────────────────────────────────────────
 
 function getOrCreateDeleteModal() {
   const MODAL_ID = "delete-confirm-modal";
@@ -123,7 +112,6 @@ function confirmDeleteModal(noteName) {
     const cancelBtn = overlay.querySelector("#modal-cancel-btn");
     const deleteBtn = overlay.querySelector("#modal-delete-btn");
 
-    // Reset button every time (in case a previous delete left it loading)
     deleteBtn.classList.remove("loading");
     deleteBtn.innerHTML = `
       <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"
@@ -165,8 +153,6 @@ function confirmDeleteModal(noteName) {
   });
 }
 
-// ─── Empty State ──────────────────────────────────────────────────────────────
-
 function renderEmptyNotesState(container) {
   container.innerHTML = `
     <div class="notes-empty-state">
@@ -182,14 +168,10 @@ function renderEmptyNotesState(container) {
     </div>`;
 }
 
-// ─── Safe JSON fetch helper ───────────────────────────────────────────────────
-// Catches the case where PHP returns an HTML error page instead of JSON.
-
 async function safeFetchJson(url, options) {
   const res = await fetch(url, options);
   const text = await res.text();
 
-  // If the response starts with "<" it's HTML (a PHP error page), not JSON
   const trimmed = text.trim();
   if (trimmed.startsWith("<")) {
     console.error("Backend returned HTML instead of JSON. Raw response:", trimmed.slice(0, 400));
@@ -208,13 +190,10 @@ async function safeFetchJson(url, options) {
   }
 }
 
-// ─── Note Deletion ────────────────────────────────────────────────────────────
-
 async function handleNoteDelete(noteId, noteName, cardElement, gridElement) {
   const confirmed = await confirmDeleteModal(noteName);
   if (!confirmed) return;
 
-  // Show loading on button
   const deleteBtn = document.querySelector("#modal-delete-btn");
   if (deleteBtn) {
     deleteBtn.classList.add("loading");
@@ -235,7 +214,6 @@ async function handleNoteDelete(noteId, noteName, cardElement, gridElement) {
       }
     );
   } catch (err) {
-    // Network-level failure (server down, CORS, etc.)
     console.error("Delete network error:", err);
     _closeModalAndAlert("Network error. Please check your connection and try again.", deleteBtn);
     return;
@@ -246,11 +224,9 @@ async function handleNoteDelete(noteId, noteName, cardElement, gridElement) {
     return;
   }
 
-  // ── Success ──────────────────────────────────────────────────────────────
   const overlay = document.getElementById("delete-confirm-modal");
   if (overlay) overlay.classList.remove("modal-open");
 
-  // Animate card out
   cardElement.style.transition = "opacity 0.22s ease, transform 0.22s ease";
   cardElement.style.opacity    = "0";
   cardElement.style.transform  = "scale(0.93)";
@@ -264,7 +240,6 @@ async function handleNoteDelete(noteId, noteName, cardElement, gridElement) {
 }
 
 function _closeModalAndAlert(message, deleteBtn) {
-  // Restore button
   if (deleteBtn) {
     deleteBtn.classList.remove("loading");
     deleteBtn.innerHTML = `
@@ -281,8 +256,6 @@ function _closeModalAndAlert(message, deleteBtn) {
   if (overlay) overlay.classList.remove("modal-open");
   setTimeout(() => alert(message), 300);
 }
-
-// ─── Notes Grid Renderer ──────────────────────────────────────────────────────
 
 function renderNotesGrid(notes, container, onView) {
   if (!container) return;
@@ -330,8 +303,6 @@ function renderNotesGrid(notes, container, onView) {
     card.addEventListener("click", () => onView(card.dataset.noteId));
   });
 }
-
-// ─── Report Page ──────────────────────────────────────────────────────────────
 
 async function initReportPage() {
   requireAuth();
@@ -385,63 +356,6 @@ function renderQuizHistory(results) {
     }).join("");
 }
 
-// ─── View Note Page ───────────────────────────────────────────────────────────
-
-// async function initViewNotePage() {
-//   requireAuth();
-//   const params = new URLSearchParams(window.location.search);
-//   const noteId = params.get("id");
-
-//   if (!noteId) {
-//     window.location.href = "http://localhost:8000/SmartStudyCompanion/frontend/pages/dashboard.html";
-//     return;
-//   }
-
-//   const note = await fetchNoteById(noteId);
-//   if (!note) {
-//     alert("Note not found.");
-//     window.location.href = "http://localhost:8000/SmartStudyCompanion/frontend/pages/dashboard.html";
-//     return;
-//   }
-
-//   setTextContent("file-info-name", note.name);
-//   setTextContent("file-info-size", note.file_size);
-//   setTextContent("file-info-type", note.file_type);
-//   setTextContent("file-info-date", note.upload_date);
-
-//   const previewEl = document.getElementById("note-preview-text");
-//   if (previewEl) {
-//     const raw = note.content.slice(0, 6000);
-//     const decoded = raw
-//       .replace(/&lt;/g, "<").replace(/&gt;/g, ">")
-//       .replace(/&amp;/g, "&").replace(/&quot;/g, '"').replace(/&#39;/g, "'");
-//     previewEl.innerHTML = decoded + (note.content.length > 6000
-//       ? '<p class="preview-truncated">[… truncated — download to see full content]</p>' : "");
-//   }
-
-//   wireLinkButton("btn-generate-summary", `summary.html?id=${noteId}`);
-//   wireLinkButton("btn-generate-quiz",    `quiz.html?id=${noteId}`);
-//   wireLinkButton("btn-ask-ai",           `chat.html?id=${noteId}`);
-
-//   const summarySection = document.getElementById("summary-section");
-//   if (summarySection) await initSummarySection(noteId, note.name);
-// }
-
-
-// ─── View Note Page ───────────────────────────────────────────────────────────
-// FIXED VERSION — replace the initViewNotePage function in main.js with this.
-//
-// KEY FIXES:
-//   1. Removed .slice(0, 6000) — this was cutting base64 image strings in half,
-//      producing broken <img> tags and corrupt data URIs.
-//   2. Removed the manual entity replacement (replace /&lt;/g etc.) — this was
-//      double-decoding HTML entities, corrupting valid HTML tags produced by the
-//      Python extractor (pdf2image base64 output). The content from the DB is
-//      already valid HTML — just set it directly via innerHTML.
-//   3. Added isHtml detection: if content starts with '<' it is HTML (PDF pages
-//      as images); otherwise treat as plain text and use textContent.
-// ─────────────────────────────────────────────────────────────────────────────
-
 async function initViewNotePage() {
   requireAuth();
   const params = new URLSearchParams(window.location.search);
@@ -467,20 +381,11 @@ async function initViewNotePage() {
   const previewEl = document.getElementById("note-preview-text");
   if (previewEl && note.content) {
     const content = note.content;
-
-    // Detect whether the stored content is HTML (PDF image pages) or plain text.
-    // pdf2image output always starts with a <div class="pdf-page"> tag.
-    // Plain text / pasted content never starts with '<'.
     const isHtml = content.trim().startsWith('<');
 
     if (isHtml) {
-      // ── PDF rendered as images ──────────────────────────────────────────
-      // Set the full content via innerHTML — do NOT slice or replace entities.
-      // The content contains data:image/png;base64,... URIs that must be intact.
       previewEl.innerHTML = content;
     } else {
-      // ── Plain text or pasted notes ──────────────────────────────────────
-      // Use textContent so nothing is interpreted as HTML (safe from XSS too).
       previewEl.style.whiteSpace = 'pre-wrap';
       previewEl.style.padding = '1.25rem';
       previewEl.textContent = content;
@@ -505,8 +410,6 @@ function wireLinkButton(btnId, href) {
   if (btn) btn.addEventListener("click", () => { window.location.href = href; });
 }
 
-// ─── Dashboard Page ───────────────────────────────────────────────────────────
-
 async function initDashboardPage() {
   requireAuth();
   renderUserInfo();
@@ -526,15 +429,11 @@ async function initDashboardPage() {
   });
 }
 
-// ─── Global Helpers ───────────────────────────────────────────────────────────
-
 function escapeHtml(str) {
   return String(str)
     .replace(/&/g, "&amp;").replace(/</g, "&lt;")
     .replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 }
-
-// ─── Router ───────────────────────────────────────────────────────────────────
 
 async function main() {
   const page = getCurrentPage();
@@ -562,8 +461,6 @@ async function main() {
       console.info(`main.js: no init defined for page "${page}"`);
   }
 }
-
-// ─── Login Page Tabs ──────────────────────────────────────────────────────────
 
 function setupLoginTabs() {
   const loginTab   = document.getElementById("tab-login");
