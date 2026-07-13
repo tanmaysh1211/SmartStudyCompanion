@@ -1,21 +1,11 @@
-/* ============================================================
-   style.css  —  Smart Study Companion
-   Global base styles, CSS variables, reusable components.
-   Imported by EVERY page.
-   ============================================================ */
-
-/* ── Google Fonts ─────────────────────────────────────────── */
 @import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap');
 
-/* ── CSS Custom Properties ────────────────────────────────── */
 :root {
-    /* Brand */
     --clr-primary: #6C63FF;
     --clr-primary-dark: #4A42CC;
     --clr-primary-light: #f0eeff;
     --clr-primary-faint: #faf9ff;
 
-    /* Semantic */
     --clr-success: #22c55e;
     --clr-success-bg: #f0fdf4;
     --clr-success-border: #bbf7d0;
@@ -25,7 +15,6 @@
     --clr-warning: #f59e0b;
     --clr-warning-bg: #fffbeb;
 
-    /* Neutrals */
     --clr-bg: #f7f7fb;
     --clr-white: #ffffff;
     --clr-text: #1a1a2e;
@@ -34,32 +23,24 @@
     --clr-border: #e0dff5;
     --clr-border-light: #eeecfa;
 
-    /* Typography */
     --font-heading: 'Sora', sans-serif;
     --font-body: 'DM Sans', sans-serif;
 
-    /* Spacing */
     --radius-sm: 6px;
     --radius-md: 10px;
     --radius-lg: 16px;
     --radius-xl: 24px;
     --radius-full: 9999px;
 
-    /* Shadows */
     --shadow-sm: 0 1px 4px rgba(108, 99, 255, 0.06);
     --shadow-md: 0 2px 12px rgba(108, 99, 255, 0.10);
     --shadow-lg: 0 8px 32px rgba(108, 99, 255, 0.18);
-
-    /* Motion */
     --transition: 0.18s ease;
-
-    /* Layout */
     --nav-height: 56px;
     --main-max-width: 1200px;
     --main-padding: 2rem 3rem;
 }
 
-/* ── Reset ────────────────────────────────────────────────── */
 *,
 *::before,
 *::after {
@@ -116,7 +97,6 @@ h4 {
     color: var(--clr-text);
 }
 
-/* ── Layout Helpers ───────────────────────────────────────── */
 .main {
     max-width: var(--main-max-width);
     margin: 0 auto;
