@@ -13,27 +13,18 @@
 
     <div class="login-container">
         <div class="login-card">
-
-            <!-- Left: Form Side -->
             <div class="login-form-side">
-
-                <!-- Tabs -->
                 <div class="login-tabs">
                     <button class="tab-btn active" id="tab-login">Login</button>
                     <button class="tab-btn" id="tab-signup">Sign Up</button>
                 </div>
-
-                <!-- Login Form -->
                 <form id="login-form" autocomplete="off" novalidate>
                     <h2 class="form-title">LOGIN</h2>
-
                     <div id="login-error" class="alert alert-error" style="display:none;"></div>
-
                     <div class="form-group">
                         <input class="input" type="email" id="email" name="email" placeholder="johndoe@example.com"
                             required autocomplete="email" />
                     </div>
-
                     <div class="form-group">
                         <div class="input-password-wrap">
                             <input class="input" type="password" id="password" name="password" placeholder="Password"
@@ -51,7 +42,6 @@
                     </p>
                 </form>
 
-                <!-- Signup Form (hidden by default) -->
                 <form id="signup-form" autocomplete="off" novalidate style="display:none;">
                     <h2 class="form-title">SIGN UP</h2>
 
@@ -88,10 +78,8 @@
                         <a href="#" id="switch-to-login">Login</a>
                     </p>
                 </form>
+            </div>
 
-            </div><!-- /login-form-side -->
-
-            <!-- Right: Visual Side -->
             <div class="login-visual-side">
                 <div class="login-visual-content">
                     <div class="login-visual-icon">🎓</div>
@@ -106,10 +94,9 @@
                 </div>
             </div>
 
-        </div><!-- /login-card -->
-    </div><!-- /login-container -->
+        </div>
+    </div>
 
-    <!-- Scripts — auth.js must come before main.js -->
     <script src="js/auth.js"></script>
     <script src="js/upload.js"></script>
     <script src="js/summary.js"></script>
@@ -118,14 +105,12 @@
     <script src="js/main.js"></script>
 
     <script>
-        // Extra UX: show/hide password toggle
         document.querySelectorAll(".toggle-password").forEach((btn) => {
             btn.addEventListener("click", () => {
                 const input = document.getElementById(btn.dataset.target);
                 input.type = input.type === "password" ? "text" : "password";
             });
         });
-        // Quick switch links
         document.getElementById("switch-to-signup")?.addEventListener("click", (e) => {
             e.preventDefault();
             document.getElementById("tab-signup").click();
