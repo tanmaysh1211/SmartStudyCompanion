@@ -1,51 +1,19 @@
 <?php
-/**
- * backend/quiz/save_result.php
- * ─────────────────────────────────────────────────────────────
- * POST /backend/quiz/save_result.php
- * Authorization: Bearer <token>
- * Content-Type: application/json
- *
- * Request body:
- *   {
- *     "note_id" : int,   // which note the quiz was generated from
- *     "score"   : int,   // number of correct answers (e.g. 7)
- *     "total"   : int    // total number of questions  (e.g. 10)
- *   }
- *
- * The server recalculates `percent` — never trusting the client value.
- *
- * Returns JSON:
- *   Success → {
- *       "success"   : true,
- *       "result_id" : int,
- *       "percent"   : int,
- *       "label"     : string,   // "Outstanding" | "Great" | "Good" | "Keep Practicing"
- *       "message"   : string
- *   }
- *   Failure → { "success": false, "message": string }
- * ─────────────────────────────────────────────────────────────
- */
-
 declare(strict_types=1);
-
 require_once __DIR__ . '/../config/cors.php';
 require_once __DIR__ . '/../config/db.php';
 require_once __DIR__ . '/../config/jwt_helper.php';
 require_once __DIR__ . '/../auth/verify_token.php';
 
-// ── Auth guard ────────────────────────────────────────────────
-$authUser = requireAuth();          // exits with 401 if token invalid
+$authUser = requireAuth();          
 $userId   = (int)$authUser['sub'];
 
-// ── Only POST ─────────────────────────────────────────────────
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     http_response_code(405);
     echo json_encode(['success' => false, 'message' => 'Method not allowed. Use POST.']);
     exit;
 }
 
-// ── Parse JSON body ───────────────────────────────────────────
 $raw  = file_get_contents('php://input');
 $body = json_decode($raw, true);
 
@@ -55,26 +23,22 @@ if (!is_array($body)) {
     exit;
 }
 
-// ── Extract inputs ────────────────────────────────────────────
 $noteId = isset($body['note_id']) ? (int)$body['note_id'] : 0;
 $score  = isset($body['score'])   ? (int)$body['score']   : -1;
 $total  = isset($body['total'])   ? (int)$body['total']   : 0;
 
-// ── Validate: note_id ─────────────────────────────────────────
 if ($noteId <= 0) {
     http_response_code(400);
     echo json_encode(['success' => false, 'message' => 'note_id must be a positive integer.']);
     exit;
 }
 
-// ── Validate: score ───────────────────────────────────────────
 if ($score < 0) {
     http_response_code(400);
     echo json_encode(['success' => false, 'message' => 'score must be 0 or greater.']);
     exit;
 }
 
-// ── Validate: total ───────────────────────────────────────────
 if ($total <= 0 || $total > 100) {
     http_response_code(400);
     echo json_encode(['success' => false, 'message' => 'total must be between 1 and 100.']);
@@ -87,11 +51,9 @@ if ($score > $total) {
     exit;
 }
 
-// ── Recalculate percent server-side ──────────────────────────
 $percent = (int)round(($score / $total) * 100);
 $percent = max(0, min(100, $percent));  // clamp 0-100
 
-// ── Verify note exists and belongs to this user ───────────────
 try {
     $noteStmt = $pdo->prepare(
         'SELECT id, name
@@ -117,7 +79,6 @@ if (!$note) {
     exit;
 }
 
-// ── Insert quiz result row ────────────────────────────────────
 try {
     $insert = $pdo->prepare(
         'INSERT INTO quiz_results
@@ -142,7 +103,6 @@ try {
     exit;
 }
 
-// ── Performance label ─────────────────────────────────────────
 $label = match(true) {
     $percent >= 90 => 'Outstanding',
     $percent >= 75 => 'Great',
@@ -150,7 +110,6 @@ $label = match(true) {
     default        => 'Keep Practicing',
 };
 
-// ── Success ───────────────────────────────────────────────────
 http_response_code(201);
 echo json_encode([
     'success'   => true,
