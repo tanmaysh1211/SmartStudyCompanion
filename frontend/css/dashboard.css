@@ -1,15 +1,7 @@
-/* ============================================================
-   dashboard.css  —  Smart Study Companion
-   Styles specific to dashboard.html.
-   Requires style.css to already be loaded.
-   ============================================================ */
-
-/* ── Dashboard Main ───────────────────────────────────────── */
 .dashboard-main {
     padding-top: 0;
 }
 
-/* ── Greeting Banner ──────────────────────────────────────── */
 .dashboard-greeting {
     background: linear-gradient(135deg, var(--clr-primary) 0%, #8b7cf8 100%);
     border-radius: var(--radius-lg);
@@ -38,7 +30,6 @@
     animation: float 3s ease-in-out infinite;
 }
 
-/* ── Stats Bar ────────────────────────────────────────────── */
 .stats-bar {
     display: flex;
     gap: 1rem;
@@ -82,7 +73,6 @@
     color: var(--clr-text-light);
 }
 
-/* ── Section Header with Action ───────────────────────────── */
 .section-header {
     display: flex;
     align-items: center;
@@ -90,7 +80,6 @@
     margin-bottom: 1rem;
 }
 
-/* ── Notes Toolbar ────────────────────────────────────────── */
 .notes-toolbar {
     display: flex;
     gap: 0.75rem;
@@ -108,7 +97,6 @@
     min-width: 160px;
 }
 
-/* ── Note Card Hover Accent ───────────────────────────────── */
 .note-card::before {
     content: "";
     display: block;
@@ -125,7 +113,6 @@
     opacity: 1;
 }
 
-/* ── Note Card Type Badge ─────────────────────────────────── */
 .note-type-badge {
     display: inline-block;
     background: var(--clr-primary-light);
@@ -139,7 +126,6 @@
     text-transform: uppercase;
 }
 
-/* ── No Notes Placeholder ─────────────────────────────────── */
 .notes-empty {
     grid-column: 1 / -1;
     text-align: center;
@@ -166,7 +152,6 @@
     margin-bottom: 1.5rem;
 }
 
-/* ── Quick Action Cards (below notes grid) ────────────────── */
 .quick-actions {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -209,7 +194,6 @@
     color: rgba(255, 255, 255, 0.75);
 }
 
-/* ── Upload Prompt Banner ─────────────────────────────────── */
 .upload-prompt {
     background: linear-gradient(135deg, var(--clr-primary-light) 0%, #e8e4ff 100%);
     border: 1.5px dashed var(--clr-primary);
@@ -236,7 +220,6 @@
     margin-bottom: 1.5rem;
 }
 
-/* ── Note Card Delete Confirm ─────────────────────────────── */
 .note-delete-confirm {
     background: var(--clr-danger-bg);
     border: 1px solid var(--clr-danger-border);
@@ -269,8 +252,6 @@
     opacity: 0.88;
 }
 
-
-/* ── Note Card Meta — type/size on line 1, date on line 2 ── */
 .note-card-meta {
     display: flex;
     flex-direction: column;
@@ -296,7 +277,6 @@
     }
 }
 
-/* ── Responsive ───────────────────────────────────────────── */
 @media (max-width: 768px) {
     .quick-actions {
         grid-template-columns: 1fr;
