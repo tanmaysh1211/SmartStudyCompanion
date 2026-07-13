@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -10,15 +9,11 @@
 </head>
 
 <body>
-
-    <!-- Navbar -->
     <div id="navbar-placeholder"></div>
-
     <main class="main summary-main">
 
         <div class="summary-wrapper card">
 
-            <!-- Summary Header -->
             <div class="summary-header">
                 <div class="summary-header-left">
                     <div class="summary-avatar" aria-hidden="true">🧠</div>
@@ -33,26 +28,21 @@
                 </div>
             </div>
 
-            <!-- Loading State -->
             <div class="summary-loading" id="summary-loading" style="display: none;">
                 <div class="loading-spinner"></div>
                 <p class="loading-text">Analysing your notes and generating a summary…</p>
             </div>
 
-            <!-- Error State -->
             <div class="summary-error" id="summary-error" style="display: none;"></div>
 
-            <!-- Summary Content -->
             <div class="summary-content markdown-body" id="summary-content" style="display: none;"></div>
 
-            <!-- Action Buttons -->
             <div class="summary-actions" id="summary-actions" style="display: none;">
                 <button class="btn-secondary" id="copy-summary-btn">📋 Copy</button>
                 <button class="btn-secondary" id="download-summary-btn">⬇ Download</button>
                 <button class="btn-outline btn-sm" id="generate-summary-btn-2">↺ Regenerate</button>
             </div>
 
-            <!-- Keyword Search -->
             <div class="summary-search-bar" id="summary-search-bar" style="display: none;">
                 <input type="text" id="summary-search" class="summary-search-input"
                     placeholder="🔍 Highlight a keyword…" aria-label="Search summary keywords" />
@@ -67,10 +57,8 @@
 
     </main>
 
-    <!-- marked.js for markdown rendering -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/9.1.6/marked.min.js"></script>
 
-    <!-- MathJax for LaTeX rendering -->
     <script>
         window.MathJax = {
             tex: {
@@ -94,5 +82,4 @@
     <script src="js/main.js"></script>
 
 </body>
-
 </html>
