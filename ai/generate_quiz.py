@@ -1,59 +1,10 @@
-#!/usr/bin/env python
-"""
-ai/generate_quiz.py
-═══════════════════════════════════════════════════════════════
-Generates multiple-choice quiz questions from study-note content
-using the OpenAI API.
-
-Called by backend/ai/generate_quiz.php via shell_exec():
-    python3 ai/generate_quiz.py '<json_payload>'
-
-Input  — single CLI argument: JSON string
-    {
-        "content"  : "<full note text>",         (required)
-        "note_name": "<display name>",            (optional)
-        "count"    : 10,                          (optional, default 10)
-        "difficulty": "mixed"                     (optional: easy|medium|hard|mixed)
-    }
-
-Output (stdout) — always valid JSON:
-    Success → {
-        "success"   : true,
-        "questions" : [
-            {
-                "question" : "What is ...?",
-                "options"  : ["A. ...", "B. ...", "C. ...", "D. ..."],
-                "answer"   : 0,          ← 0-based index of correct option
-                "explanation": "..."     ← why the answer is correct
-            },
-            ...
-        ],
-        "count": int
-    }
-    Failure → { "success": false, "message": "..." }
-
-Environment variables:
-    OPENAI_API_KEY   Your OpenAI API key (required)
-    OPENAI_MODEL     Model name (default: gpt-4o-mini)
-
-Install dependencies:
-    pip install openai
-═══════════════════════════════════════════════════════════════
-"""
-
 from __future__ import annotations
-
 import json
 import os
 import re
 import sys
 import textwrap
 import time
-
-
-# ════════════════════════════════════════════════════════════════
-# 1.  Output helpers
-# ════════════════════════════════════════════════════════════════
 
 def output_success(questions: list[dict]) -> None:
     print(json.dumps(
@@ -62,15 +13,9 @@ def output_success(questions: list[dict]) -> None:
     ))
     sys.exit(0)
 
-
 def output_failure(message: str) -> None:
     print(json.dumps({"success": False, "message": message}, ensure_ascii=False))
     sys.exit(1)
-
-
-# ════════════════════════════════════════════════════════════════
-# 2.  Input parsing & validation
-# ════════════════════════════════════════════════════════════════
 
 MAX_INPUT_CHARS    = 80_000
 MIN_CONTENT_CHARS  = 100
@@ -78,63 +23,9 @@ MAX_QUESTIONS      = 30
 MIN_QUESTIONS      = 2
 VALID_DIFFICULTIES = {"easy", "medium", "hard", "mixed"}
 
-
-# def parse_args() -> dict:
-#     """
-#     Parses the single CLI JSON argument.
-#     Returns validated dict: content, note_name, count, difficulty.
-#     """
-#     if len(sys.argv) < 2:
-#         output_failure(
-#             "Usage: python generate_quiz.py '<json_payload>'\n"
-#             "Required key: content. Optional: note_name, count, difficulty"
-#         )
-
-#     try:
-#         data = json.loads(sys.argv[1].strip())
-#     except json.JSONDecodeError as exc:
-#         output_failure(f"Invalid JSON argument: {exc}")
-
-#     if not isinstance(data, dict):
-#         output_failure("Argument must be a JSON object.")
-
-#     # ── content ───────────────────────────────────────────────
-#     content = str(data.get("content", "")).strip()
-#     if len(content) < MIN_CONTENT_CHARS:
-#         output_failure(
-#             f"Note content is too short to generate questions "
-#             f"(minimum {MIN_CONTENT_CHARS} characters)."
-#         )
-#     if len(content) > MAX_INPUT_CHARS:
-#         content = content[:MAX_INPUT_CHARS]
-
-#     # ── note_name ────────────────────────────────────────────
-#     note_name = str(data.get("note_name", "the uploaded notes")).strip()
-
-#     # ── count ─────────────────────────────────────────────────
-#     try:
-#         count = int(data.get("count", 10))
-#         count = max(MIN_QUESTIONS, min(MAX_QUESTIONS, count))
-#     except (TypeError, ValueError):
-#         count = 10
-
-#     # ── difficulty ────────────────────────────────────────────
-#     difficulty = str(data.get("difficulty", "mixed")).strip().lower()
-#     if difficulty not in VALID_DIFFICULTIES:
-#         difficulty = "mixed"
-
-#     return {
-#         "content":    content,
-#         "note_name":  note_name,
-#         "count":      count,
-#         "difficulty": difficulty,
-#     }
-
-
 def parse_args() -> dict:
     import argparse
 
-    # Support --file (Windows temp file method) or direct JSON arg
     if '--file' in sys.argv:
         parser = argparse.ArgumentParser()
         parser.add_argument('--file', required=True)
@@ -160,7 +51,6 @@ def parse_args() -> dict:
     if not isinstance(data, dict):
         output_failure("Argument must be a JSON object.")
 
-    # ── content ───────────────────────────────────────────────
     content = str(data.get("content", "")).strip()
     if len(content) < MIN_CONTENT_CHARS:
         output_failure(
@@ -170,17 +60,14 @@ def parse_args() -> dict:
     if len(content) > MAX_INPUT_CHARS:
         content = content[:MAX_INPUT_CHARS]
 
-    # ── note_name ─────────────────────────────────────────────
     note_name = str(data.get("note_name", "the uploaded notes")).strip()
 
-    # ── count ─────────────────────────────────────────────────
     try:
         count = int(data.get("count", 10))
         count = max(MIN_QUESTIONS, min(MAX_QUESTIONS, count))
     except (TypeError, ValueError):
         count = 10
 
-    # ── difficulty ────────────────────────────────────────────
     difficulty = str(data.get("difficulty", "mixed")).strip().lower()
     if difficulty not in VALID_DIFFICULTIES:
         difficulty = "mixed"
@@ -191,10 +78,6 @@ def parse_args() -> dict:
         "count":      count,
         "difficulty": difficulty,
     }
-
-# ════════════════════════════════════════════════════════════════
-# 3.  Prompt builder
-# ════════════════════════════════════════════════════════════════
 
 QUIZ_SYSTEM = textwrap.dedent("""\
     You are an expert educator who creates high-quality multiple-choice quiz
@@ -220,7 +103,7 @@ _DIFFICULTY_INSTRUCTIONS = {
 }
 
 
-def build_prompt(content: str, note_name: str, count: int, difficulty: str) -> str:
+def build_prompt(content: str, note_name: str, count: int, difficulty: str):
     diff_instruction = _DIFFICULTY_INSTRUCTIONS.get(difficulty, _DIFFICULTY_INSTRUCTIONS["mixed"])
 
     return textwrap.dedent(f"""\
@@ -256,34 +139,22 @@ def build_prompt(content: str, note_name: str, count: int, difficulty: str) -> s
         - Do not make the last option always correct.
     """)
 
-
-# ════════════════════════════════════════════════════════════════
-# 4.  OpenAI API call
-# ════════════════════════════════════════════════════════════════
-
 DEFAULT_MODEL   = "gpt-4o-mini"
 MAX_RETRIES     = 3
 RETRY_DELAY_SEC = 2.0
 
-
-def call_openai(prompt: str, system_prompt: str) -> str:
-    """
-    Calls the OpenAI Chat Completions API and returns the raw text response.
-    Raises RuntimeError on unrecoverable failures.
-    """
+def call_openai(prompt: str, system_prompt: str):
     try:
         from openai import OpenAI, AuthenticationError, RateLimitError, APIError  # type: ignore
     except ImportError:
         raise RuntimeError(
             "openai is not installed. "
-            "Run: pip install openai"
         )
 
     api_key = os.getenv("OPENAI_API_KEY", "").strip()
     if not api_key:
         raise RuntimeError(
             "OPENAI_API_KEY environment variable is not set. "
-            "Get your key at https://platform.openai.com/api-keys"
         )
 
     client = OpenAI(api_key=api_key)
@@ -299,7 +170,7 @@ def call_openai(prompt: str, system_prompt: str) -> str:
                     {"role": "system", "content": system_prompt},
                     {"role": "user",   "content": prompt},
                 ],
-                temperature=0.2,      # low = deterministic, structured JSON output
+                temperature=0.2,      
                 top_p=0.95,
                 max_tokens=4096,
             )
@@ -323,7 +194,6 @@ def call_openai(prompt: str, system_prompt: str) -> str:
             last_error = exc
             err_str = str(exc).lower()
 
-            # Non-retryable content policy violation
             if "content_policy" in err_str or "content policy" in err_str:
                 raise RuntimeError(
                     "OpenAI blocked the request due to content policy. "
@@ -343,27 +213,14 @@ def call_openai(prompt: str, system_prompt: str) -> str:
         f"Last error: {last_error}"
     )
 
-
-# ════════════════════════════════════════════════════════════════
-# 5.  JSON parsing & validation
-# ════════════════════════════════════════════════════════════════
-
-def extract_json_array(raw: str) -> str:
-    """
-    Extracts the first JSON array from a raw string.
-    Handles cases where the model wraps the array in markdown fences
-    or adds preamble text.
-    """
-    # Strip markdown code fences: ```json ... ``` or ``` ... ```
+def extract_json_array(raw: str):
     raw = re.sub(r"```(?:json)?\s*", "", raw, flags=re.IGNORECASE)
     raw = raw.replace("```", "").strip()
 
-    # Find the outermost [ ... ] array
     start = raw.find("[")
     if start == -1:
         return raw  # let the caller handle the parse error
 
-    # Walk forward to find the matching closing bracket
     depth = 0
     for i, ch in enumerate(raw[start:], start=start):
         if ch == "[":
@@ -373,14 +230,10 @@ def extract_json_array(raw: str) -> str:
             if depth == 0:
                 return raw[start: i + 1]
 
-    return raw[start:]  # malformed — return what we have
+    return raw[start:]  
 
 
-def validate_question(q: dict, index: int) -> str | None:
-    """
-    Validates one question object.
-    Returns an error string if invalid, None if OK.
-    """
+def validate_question(q: dict, index: int):
     if not isinstance(q, dict):
         return f"Question {index + 1}: must be an object, got {type(q).__name__}"
 
@@ -406,14 +259,10 @@ def validate_question(q: dict, index: int) -> str | None:
             f"got {answer!r}"
         )
 
-    return None  # valid
+    return None  
 
 
 def parse_and_validate(raw_response: str, expected_count: int) -> list[dict]:
-    """
-    Parses the raw OpenAI response into a validated list of question dicts.
-    Raises ValueError with a descriptive message on any problem.
-    """
     json_str = extract_json_array(raw_response)
 
     try:
@@ -458,15 +307,8 @@ def parse_and_validate(raw_response: str, expected_count: int) -> list[dict]:
     return validated[:expected_count]
 
 
-# ════════════════════════════════════════════════════════════════
-# 6.  Main
-# ════════════════════════════════════════════════════════════════
-
 def main() -> None:
-    # ── Parse args ────────────────────────────────────────────
     args = parse_args()
-
-    # ── Build prompt ──────────────────────────────────────────
     prompt = build_prompt(
         content    = args["content"],
         note_name  = args["note_name"],
@@ -474,15 +316,14 @@ def main() -> None:
         difficulty = args["difficulty"],
     )
 
-    # ── Call OpenAI (with retry on JSON parse failure) ────────
     questions: list[dict] = []
     last_error = ""
 
-    for attempt in range(1, 4):    # up to 3 full generation attempts
+    for attempt in range(1, 4):   
         try:
             raw = call_openai(prompt, QUIZ_SYSTEM)
             questions = parse_and_validate(raw, args["count"])
-            break  # success
+            break  
 
         except RuntimeError as exc:
             output_failure(str(exc))   # non-retryable API error
@@ -490,7 +331,6 @@ def main() -> None:
         except ValueError as exc:
             last_error = str(exc)
             if attempt < 3:
-                # Add an explicit reminder to the prompt and retry
                 prompt += (
                     f"\n\nIMPORTANT: Your previous response was invalid. "
                     f"Error: {last_error}. "
@@ -505,7 +345,6 @@ def main() -> None:
         )
 
     output_success(questions)
-
 
 if __name__ == "__main__":
     main()
