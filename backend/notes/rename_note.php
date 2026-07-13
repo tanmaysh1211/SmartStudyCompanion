@@ -1,39 +1,19 @@
 <?php
-/**
- * backend/notes/rename_note.php
- * ─────────────────────────────────────────────────────────────
- * PUT /backend/notes/rename_note.php
- * Authorization: Bearer <token>
- * Content-Type: application/json
- *
- * Body:
- *   { "note_id": int, "new_name": "string" }
- *
- * Returns JSON:
- *   Success → { "success": true, "message": "...", "note": { id, name } }
- *   Failure → { "success": false, "message": "..." }
- * ─────────────────────────────────────────────────────────────
- */
-
 declare(strict_types=1);
-
 require_once __DIR__ . '/../config/cors.php';
 require_once __DIR__ . '/../config/db.php';
 require_once __DIR__ . '/../config/jwt_helper.php';
 require_once __DIR__ . '/../auth/verify_token.php';
 
-// ── Auth guard ────────────────────────────────────────────────
 $authUser = requireAuth();
 $userId   = (int)$authUser['sub'];
 
-// ── Only PUT ──────────────────────────────────────────────────
 if ($_SERVER['REQUEST_METHOD'] !== 'PUT') {
     http_response_code(405);
     echo json_encode(['success' => false, 'message' => 'Method not allowed. Use PUT.']);
     exit;
 }
 
-// ── Parse JSON body ───────────────────────────────────────────
 $body = json_decode(file_get_contents('php://input'), true);
 
 if (!$body || !is_array($body)) {
@@ -42,18 +22,15 @@ if (!$body || !is_array($body)) {
     exit;
 }
 
-// ── Extract & validate inputs ─────────────────────────────────
 $noteId  = isset($body['note_id'])  ? (int)$body['note_id']           : 0;
 $newName = isset($body['new_name']) ? trim((string)$body['new_name']) : '';
 
-// note_id
 if ($noteId <= 0) {
     http_response_code(400);
     echo json_encode(['success' => false, 'message' => 'A valid note_id is required.']);
     exit;
 }
 
-// new_name — required, length bounds
 if ($newName === '') {
     http_response_code(400);
     echo json_encode(['success' => false, 'message' => 'new_name cannot be empty.']);
@@ -72,10 +49,8 @@ if (mb_strlen($newName) > 120) {
     exit;
 }
 
-// Strip any HTML/script tags that slipped through
 $newName = strip_tags($newName);
 
-// ── Verify the note exists and is owned by this user ──────────
 try {
     $check = $pdo->prepare(
         'SELECT id, name
@@ -104,7 +79,6 @@ if (!$note) {
     exit;
 }
 
-// ── No-op check: name is unchanged ───────────────────────────
 if ($note['name'] === $newName) {
     http_response_code(200);
     echo json_encode([
@@ -118,8 +92,6 @@ if ($note['name'] === $newName) {
     exit;
 }
 
-// ── Check for duplicate name under the same user (optional) ──
-// Comment this block out if you allow duplicate names.
 try {
     $dupCheck = $pdo->prepare(
         'SELECT id FROM notes
@@ -146,10 +118,8 @@ try {
 
 } catch (PDOException $e) {
     error_log('[rename_note.php] Duplicate check error: ' . $e->getMessage());
-    // Non-fatal — proceed with rename
 }
 
-// ── Perform rename ────────────────────────────────────────────
 try {
     $update = $pdo->prepare(
         'UPDATE notes
@@ -166,7 +136,6 @@ try {
     ]);
 
     if ($update->rowCount() === 0) {
-        // Row matched but nothing changed — treat as success
         http_response_code(200);
         echo json_encode([
             'success' => true,
@@ -183,7 +152,6 @@ try {
     exit;
 }
 
-// ── Success ───────────────────────────────────────────────────
 http_response_code(200);
 echo json_encode([
     'success' => true,
