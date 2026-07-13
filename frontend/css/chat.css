@@ -1,10 +1,3 @@
-/* ============================================================
-   chat.css  —  Smart Study Companion
-   Styles specific to chat.html (AI Chat Assistant page).
-   Requires style.css to already be loaded.
-   ============================================================ */
-
-/* ── Chat Page Layout ─────────────────────────────────────── */
 .chat-main {
     padding-top: 2rem;
     padding-bottom: 2rem;
@@ -13,7 +6,6 @@
     gap: 1rem;
 }
 
-/* ── Chat Wrapper Card ────────────────────────────────────── */
 .chat-wrapper {
     display: flex;
     flex-direction: column;
@@ -26,7 +18,6 @@
     box-shadow: var(--shadow-lg);
 }
 
-/* ── Chat Header ──────────────────────────────────────────── */
 .chat-header {
     display: flex;
     align-items: center;
@@ -80,7 +71,6 @@
     flex-shrink: 0;
 }
 
-/* Online indicator dot */
 .chat-status {
     width: 8px;
     height: 8px;
@@ -103,7 +93,6 @@
     }
 }
 
-/* ── Suggested Prompts Bar ────────────────────────────────── */
 .suggested-prompts-bar {
     display: flex;
     align-items: center;
@@ -154,7 +143,6 @@
     border-color: var(--clr-primary);
 }
 
-/* ── Messages Area ────────────────────────────────────────── */
 .chat-messages {
     flex: 1;
     overflow-y: auto;
@@ -166,7 +154,6 @@
     scroll-behavior: smooth;
 }
 
-/* Scrollbar styling */
 .chat-messages::-webkit-scrollbar {
     width: 5px;
 }
@@ -184,7 +171,6 @@
     background: var(--clr-primary);
 }
 
-/* ── Message Wrappers ─────────────────────────────────────── */
 .chat-msg-wrapper {
     display: flex;
     max-width: 78%;
@@ -200,7 +186,6 @@
     justify-content: flex-start;
 }
 
-/* ── Message Bubbles ──────────────────────────────────────── */
 .chat-msg {
     padding: 11px 16px;
     border-radius: 18px;
@@ -211,7 +196,6 @@
     position: relative;
 }
 
-/* User bubble */
 .chat-msg.user {
     background: var(--clr-primary);
     color: var(--clr-white);
@@ -219,7 +203,6 @@
     box-shadow: 0 2px 8px rgba(108, 99, 255, 0.25);
 }
 
-/* AI bubble */
 .chat-msg.model {
     background: var(--clr-white);
     color: var(--clr-text);
@@ -247,7 +230,6 @@
     text-align: left;
 }
 
-/* ── Typing Indicator ─────────────────────────────────────── */
 .chat-msg.typing {
     background: var(--clr-white);
     border: 1px solid var(--clr-border-light);
@@ -290,7 +272,6 @@
     }
 }
 
-/* ── Empty Chat State ─────────────────────────────────────── */
 .chat-empty {
     flex: 1;
     display: flex;
@@ -312,7 +293,6 @@
     text-align: center;
 }
 
-/* ── Input Area ───────────────────────────────────────────── */
 .chat-input-area {
     padding: 0.75rem 1.25rem 0.9rem;
     border-top: 1px solid var(--clr-border-light);
@@ -358,7 +338,6 @@
     color: #b5b2d0;
 }
 
-/* Send button */
 .chat-send-btn {
     width: 44px;
     height: 44px;
@@ -387,14 +366,12 @@
     transform: none;
 }
 
-/* Loading spinner inside send button */
 .chat-send-btn .spinner-sm {
     border-top-color: var(--clr-white);
     border-color: rgba(255, 255, 255, 0.3);
     border-top-color: var(--clr-white);
 }
 
-/* Input hint line */
 .chat-input-hint {
     font-size: 0.72rem;
     color: var(--clr-text-light);
@@ -411,7 +388,6 @@
     font-family: monospace;
 }
 
-/* ── Scope Notice ─────────────────────────────────────────── */
 .chat-notice {
     background: var(--clr-primary-light);
     border: 1px solid var(--clr-border);
@@ -429,7 +405,6 @@
     flex-shrink: 0;
 }
 
-/* ── Message Enter Animation ──────────────────────────────── */
 .chat-msg-wrapper {
     animation: msgIn 0.22s ease;
 }
@@ -446,7 +421,6 @@
     }
 }
 
-/* ── Error Message Bubble ─────────────────────────────────── */
 .chat-msg.error {
     background: var(--clr-danger-bg);
     color: #991b1b;
@@ -454,7 +428,6 @@
     border-bottom-left-radius: 4px;
 }
 
-/* ── Clear Confirmation (shown after "Clear" click) ───────── */
 .clear-confirm {
     display: flex;
     align-items: center;
@@ -479,7 +452,6 @@
     }
 }
 
-/* ── Responsive ───────────────────────────────────────────── */
 @media (max-width: 768px) {
     .chat-wrapper {
         height: calc(100vh - var(--nav-height) - 5rem);
@@ -529,12 +501,9 @@
     .chat-header-right .btn-secondary {
         display: none;
     }
-
-    /* hide Back on very small screens */
 }
 
 
-/* ── Markdown rendering inside AI bubbles ── */
 .chat-msg.model .markdown-body h1,
 .chat-msg.model .markdown-body h2,
 .chat-msg.model .markdown-body h3 {
@@ -585,19 +554,13 @@
     padding: 0;
 }
 
-/* LaTeX-style block equations — display as monospace block */
 .chat-msg.model .markdown-body mjx-container,
 .chat-msg.model .markdown-body .math {
     overflow-x: auto;
 }
 
-
-
-
-/* ── Markdown rendering inside AI bubbles ── */
 .chat-msg.model .chat-msg-text {
     white-space: normal;
-    /* override pre-wrap so markdown renders cleanly */
 }
 
 .chat-msg.model .markdown-body h1,
@@ -678,7 +641,6 @@
     font-style: italic;
 }
 
-/* MathJax display math centering */
 .chat-msg.model .markdown-body mjx-container[display="true"] {
     display: block;
     overflow-x: auto;
@@ -690,12 +652,10 @@
     font-size: 1em !important;
 }
 
-/* Remove top margin from first element */
 .chat-msg.model .markdown-body>*:first-child {
     margin-top: 0;
 }
 
-/* Remove bottom margin from last element */
 .chat-msg.model .markdown-body>*:last-child {
     margin-bottom: 0;
 }
