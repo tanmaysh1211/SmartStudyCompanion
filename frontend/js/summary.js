@@ -1,11 +1,4 @@
-/**
- * summary.js
- * Handles AI-generated summaries of uploaded notes.
- */
-
 const SUMMARY_API = "https://smartstudy-backend-oekm.onrender.com/backend/ai/generate_summary.php";
-
-// ─── State ────────────────────────────────────────────────────────────────────
 
 const summaryState = {
   noteId:      null,
@@ -13,8 +6,6 @@ const summaryState = {
   summaryText: "",
   loading:     false,
 };
-
-// ─── Summary Generation ───────────────────────────────────────────────────────
 
 async function generateSummary(noteId, regenerate = false) {
   if (summaryState.loading) return null;
@@ -54,12 +45,6 @@ async function generateSummary(noteId, regenerate = false) {
   }
 }
 
-// ─── Rendering ────────────────────────────────────────────────────────────────
-
-/**
- * Renders the summary using marked.js (already loaded on summary.html)
- * with LaTeX protection for MathJax, same approach as chat.js.
- */
 function renderSummary(text) {
   const container = document.getElementById("summary-content");
   if (!container) return;
@@ -67,14 +52,12 @@ function renderSummary(text) {
   container.innerHTML = markdownWithLatex(text);
   container.style.display = "block";
 
-  // Show action buttons and keyword search
   const actionsEl = document.getElementById("summary-actions");
   if (actionsEl) actionsEl.style.display = "flex";
 
   const searchBar = document.getElementById("summary-search-bar");
   if (searchBar) searchBar.style.display = "block";
 
-  // Typeset MathJax after DOM insertion
   if (window.MathJax) {
     MathJax.startup.promise.then(() => {
       MathJax.typesetPromise([container]);
@@ -82,57 +65,35 @@ function renderSummary(text) {
   }
 }
 
-/**
- * Converts markdown + LaTeX to HTML.
- * Protects LaTeX blocks before passing through marked.js,
- * then restores them so MathJax can render them.
- */
 function markdownWithLatex(text) {
   if (typeof marked === "undefined") {
-    // Fallback if marked.js not loaded — basic render
     return basicMarkdownToHtml(text);
   }
 
-  // Step 1: Protect LaTeX blocks from marked
   const latexBlocks = [];
 
   let protected_text = text
-    // Protect display math \[ ... \]
     .replace(/\\\[([\s\S]*?)\\\]/g, (match) => {
       latexBlocks.push(match);
       return `%%LATEX_BLOCK_${latexBlocks.length - 1}%%`;
     })
-    // Protect inline math \( ... \)
     .replace(/\\\(([\s\S]*?)\\\)/g, (match) => {
       latexBlocks.push(match);
       return `%%LATEX_BLOCK_${latexBlocks.length - 1}%%`;
     });
 
-  // Step 2: Run marked on the protected text
   let html = marked.parse(protected_text);
-
-  // Step 3: Restore LaTeX blocks
   html = html.replace(/%%LATEX_BLOCK_(\d+)%%/g, (_, i) => latexBlocks[parseInt(i)]);
-
   return html;
 }
 
-/**
- * Fallback basic markdown renderer (if marked.js not available).
- */
 function basicMarkdownToHtml(md) {
   let html = escapeHtml(md);
-
-  // Headings (### → h4, ## → h3, # → h2)
   html = html.replace(/^###\s+(.+)$/gm, "<h4>$1</h4>");
   html = html.replace(/^##\s+(.+)$/gm,  "<h3>$1</h3>");
   html = html.replace(/^#\s+(.+)$/gm,   "<h2>$1</h2>");
-
-  // Bold and italic
   html = html.replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>");
   html = html.replace(/\*(.+?)\*/g,     "<em>$1</em>");
-
-  // Unordered lists
   html = html.replace(/(?:^|\n)((?:[-*]\s.+\n?)+)/g, (match, list) => {
     const items = list
       .split("\n")
@@ -142,7 +103,6 @@ function basicMarkdownToHtml(md) {
     return `\n<ul>${items}</ul>`;
   });
 
-  // Paragraphs
   html = html
     .split(/\n{2,}/)
     .map((block) => {
@@ -162,8 +122,6 @@ function escapeHtml(str) {
     .replace(/>/g, "&gt;")
     .replace(/"/g, "&quot;");
 }
-
-// ─── Copy & Download ──────────────────────────────────────────────────────────
 
 async function copySummary() {
   if (!summaryState.summaryText) return;
@@ -200,7 +158,6 @@ function downloadSummary() {
   const filename = `${summaryState.noteName || "summary"}_summary.txt`;
   const blob     = new Blob([summaryState.summaryText], { type: "text/plain" });
   const url      = URL.createObjectURL(blob);
-
   const a   = document.createElement("a");
   a.href    = url;
   a.download = filename;
@@ -209,8 +166,6 @@ function downloadSummary() {
   document.body.removeChild(a);
   URL.revokeObjectURL(url);
 }
-
-// ─── UI Helpers ───────────────────────────────────────────────────────────────
 
 function setSummaryLoading(show) {
   const loadingEl  = document.getElementById("summary-loading");
@@ -242,13 +197,9 @@ function clearSummaryContent() {
   if (searchBar) searchBar.style.display = "none";
 }
 
-// ─── Keyword Highlighting ─────────────────────────────────────────────────────
-
 function highlightKeyword(term) {
   const container = document.getElementById("summary-content");
   if (!container) return;
-
-  // Re-render clean version first
   renderSummary(summaryState.summaryText);
   if (!term.trim()) return;
 
@@ -263,8 +214,6 @@ function escapeRegex(str) {
   return str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
 
-// ─── Page Init ────────────────────────────────────────────────────────────────
-
 async function initSummarySection(noteId, noteName) {
   summaryState.noteId   = noteId;
   summaryState.noteName = noteName;
@@ -274,7 +223,6 @@ async function initSummarySection(noteId, noteName) {
     generateBtn.addEventListener("click", () => generateSummary(noteId, false));
   }
 
-  // Regenerate button (inside actions bar)
   const regenBtn = document.getElementById("generate-summary-btn-2");
   if (regenBtn) {
     regenBtn.addEventListener("click", () => generateSummary(noteId, true));
@@ -294,7 +242,6 @@ async function initSummarySection(noteId, noteName) {
 
 async function initSummaryPage() {
   requireAuth();
-
   const params = new URLSearchParams(window.location.search);
   const noteId = params.get("id");
 
@@ -312,6 +259,5 @@ async function initSummaryPage() {
 
   await initSummarySection(noteId, summaryState.noteName);
 
-  // Auto-generate on page load
   await generateSummary(noteId, false);
 }
