@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -9,19 +8,15 @@
 </head>
 
 <body>
-
-    <!-- Navbar -->
     <div id="navbar-placeholder"></div>
 
     <main class="main">
 
-        <!-- Page Header -->
         <div class="page-header">
             <h1 class="page-title">Learning Report</h1>
             <p class="page-subtitle">Track your study progress and quiz performance over time.</p>
         </div>
 
-        <!-- Stats Cards Row -->
         <div class="report-grid">
 
             <div class="stat-card card">
@@ -48,9 +43,8 @@
                 <div class="stat-label">Best Score</div>
             </div>
 
-        </div><!-- /report-grid -->
-
-        <!-- Quiz History Card -->
+        </div>
+        
         <div class="card history-card">
             <div class="history-header">
                 <h2 class="card-title">📊 Quiz History</h2>
@@ -65,15 +59,12 @@
             </div>
 
             <div id="quiz-history-list">
-                <!-- Skeleton loaders while fetching -->
                 <div class="history-item skeleton"></div>
                 <div class="history-item skeleton"></div>
                 <div class="history-item skeleton"></div>
             </div>
 
-        </div><!-- /history-card -->
-
-        <!-- Progress Over Time (simple visual bar chart) -->
+        </div>
         <div class="card chart-card">
             <h2 class="card-title">📈 Score Trend</h2>
             <p class="card-sub">Your last 10 quiz scores</p>
@@ -83,7 +74,6 @@
             </div>
         </div>
 
-        <!-- CTA Row -->
         <div class="report-cta-row">
             <a href="upload.html" class="btn-primary">📂 Upload More Notes</a>
             <a href="dashboard.html" class="btn-secondary">← Back to Dashboard</a>
@@ -99,16 +89,12 @@
     <script src="js/main.js"></script>
 
     <script>
-        // Extended report page logic — filter history + render bar chart
         let allResults = [];
 
         async function loadReport() {
             requireAuth();
 
             try {
-                // const res = await fetch("../backend/quiz/get_results.php", {
-                //     headers: { Authorization: `Bearer ${getToken()}` },
-                // });
                 const res = await fetch(
                     "https://smartstudy-backend-oekm.onrender.com/backend/quiz/get_results.php",
                     {
@@ -123,7 +109,6 @@
 
                 allResults = data.results || [];
 
-                // Stats
                 const stats = data.stats || {};
                 const bestPct = allResults.length
                     ? Math.max(...allResults.map((r) => r.percent ?? Math.round((r.score / r.total) * 100)))
@@ -206,7 +191,6 @@
         </div>`;
         }
 
-        // Filter history list
         document.getElementById("history-filter").addEventListener("change", function () {
             const val = this.value;
             let filtered = allResults;
@@ -229,7 +213,6 @@
     </script>
 
     <style>
-        /* Bar chart CSS variables and styles scoped to this page */
         :root {
             --bar-good: #22c55e;
             --bar-ok: #f59e0b;
@@ -310,5 +293,4 @@
     </style>
 
 </body>
-
 </html>
