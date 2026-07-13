@@ -81,13 +81,7 @@ function extractTextFromFile(array $fileInfo): array
         return ['success' => false, 'message' => "\"{$origName}\": unsupported type. Use PDF, TXT, or MD."];
     }
 
-    // ── PDF ───────────────────────────────────────────────────
     if ($ext === 'pdf') {
-
-        // ── Write Python output to a TEMP FILE to avoid shell_exec buffer limits ──
-        // shell_exec() truncates output above ~2MB on Windows.
-        // A 101-page PDF produces ~18MB of base64 JSON — way over the limit.
-        // Solution: redirect Python stdout to a temp file, then read the file in PHP.
 
         $tmpJsonFile = tempnam(sys_get_temp_dir(), 'pdf_extract_') . '.json';
 
@@ -95,15 +89,11 @@ function extractTextFromFile(array $fileInfo): array
         $scriptPath = EXTRACT_PDF_SCRIPT;
         $pdfPath    = $tmpPath;
 
-        // Build command — redirect stdout to temp file, stderr to NUL
         $cmd = "\"{$pythonBin}\" \"{$scriptPath}\" \"{$pdfPath}\" > \"{$tmpJsonFile}\" 2>&1";
 
-        // Execute — we don't care about the return value here
-        // pclose/popen gives us exit code; we check the output file instead
         $handle   = popen($cmd, 'r');
         $exitCode = pclose($handle);
 
-        // Verify output file was created and has content
         if (!file_exists($tmpJsonFile)) {
             return ['success' => false, 'message' => 'Python did not create output file. CMD: ' . $cmd];
         }
@@ -116,7 +106,6 @@ function extractTextFromFile(array $fileInfo): array
 
         error_log("[extract_pdf] Output file size: {$fileBytes} bytes");
 
-        // Read the full JSON from the temp file
         $jsonStr = file_get_contents($tmpJsonFile);
         @unlink($tmpJsonFile); // clean up immediately
 
@@ -124,7 +113,6 @@ function extractTextFromFile(array $fileInfo): array
             return ['success' => false, 'message' => 'Could not read Python output file.'];
         }
 
-        // Strip any stray content before/after the JSON object
         $trimmed   = trim($jsonStr);
         $jsonStart = strpos($trimmed, '{');
         $jsonEnd   = strrpos($trimmed, '}');
@@ -135,7 +123,6 @@ function extractTextFromFile(array $fileInfo): array
 
         $jsonStr = substr($trimmed, $jsonStart, $jsonEnd - $jsonStart + 1);
 
-        // Decode — use JSON_BIGINT_AS_STRING to avoid precision loss on large strings
         $result = json_decode($jsonStr, true, 512, JSON_BIGINT_AS_STRING);
 
         if (json_last_error() !== JSON_ERROR_NONE) {
@@ -150,7 +137,6 @@ function extractTextFromFile(array $fileInfo): array
             return ['success' => false, 'message' => 'Extraction failed: ' . ($result['message'] ?? 'unknown')];
         }
 
-        // Store HTML content exactly as-is — contains base64 PNG images
         return [
             'success'   => true,
             'text'      => $result['text'],
@@ -160,7 +146,6 @@ function extractTextFromFile(array $fileInfo): array
         ];
     }
 
-    // ── TXT / MD ──────────────────────────────────────────────
     $text = file_get_contents($tmpPath);
     if ($text === false) {
         return ['success' => false, 'message' => "Could not read \"{$origName}\"."];
@@ -180,7 +165,6 @@ function extractTextFromFile(array $fileInfo): array
     ];
 }
 
-// ── Process uploaded files ────────────────────────────────────
 $combinedText    = '';
 $primaryFileType = 'Text';
 $totalSize       = 0;
@@ -247,7 +231,6 @@ function formatFileSize(int $bytes): string
 
 $displaySize = formatFileSize($totalSize ?: strlen($combinedText));
 
-// ── Persist original file ─────────────────────────────────────
 $storedFilePath = null;
 if ($hasFiles && isset($fileList[0])) {
     $userDir = UPLOAD_BASE_DIR . '/' . $userId;
@@ -262,12 +245,6 @@ if ($hasFiles && isset($fileList[0])) {
     }
 }
 
-// ── Save to database ──────────────────────────────────────────
-// IMPORTANT: MySQL's max_allowed_packet must be large enough to store
-// the base64 HTML content (~18MB for a 101-page PDF).
-// Run this in MySQL if inserts fail:
-//   SET GLOBAL max_allowed_packet = 67108864;  -- 64 MB
-// Or add to my.ini: max_allowed_packet = 64M
 try {
     $stmt = $pdo->prepare(
         'INSERT INTO notes
