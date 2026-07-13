@@ -19,7 +19,7 @@ function _b64url_decode(string $data): string|false
         $b64 .= str_repeat('=', 4 - $pad);
     }
 
-    return base64_decode($b64, true); // strict=true rejects invalid chars
+    return base64_decode($b64, true); 
 }
 
 function _jwt_secret(): string
@@ -173,10 +173,10 @@ function refreshJWT(string $token): ?string
     $payload = decodeJWT($token);
 
     if ($payload === null) {
-        return null; // original token is invalid — cannot refresh
+        return null; 
     }
 
-    // Strip time-sensitive claims so generateJWT() sets fresh ones
+    
     unset($payload['iat'], $payload['exp'], $payload['nbf']);
 
     return generateJWT($payload);
